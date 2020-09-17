@@ -29,7 +29,7 @@ License
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::stencil::extendedCellToCellStencil::extendedCellToCellStencil(const polyMesh& mesh)
+Foam::extendedCellToCellStencil::extendedCellToCellStencil(const polyMesh& mesh)
 :
     mesh_(mesh)
 {

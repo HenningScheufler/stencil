@@ -32,10 +32,7 @@ License
 
 namespace Foam
 {
-namespace stencil
-{
     defineTypeNameAndDebug(centredCPCCellToCellStencilObject, 0);
-}
 }
 
 

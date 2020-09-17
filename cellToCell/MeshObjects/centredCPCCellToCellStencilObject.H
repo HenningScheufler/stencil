@@ -45,9 +45,6 @@ SourceFiles
 namespace Foam
 {
 
-namespace stencil
-{
-
 /*---------------------------------------------------------------------------*\
               Class centredCPCCellToCellStencilObject Declaration
 \*---------------------------------------------------------------------------*/
@@ -92,7 +89,6 @@ public:
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-} // End namespace stencil
 } // End namespace Foam
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

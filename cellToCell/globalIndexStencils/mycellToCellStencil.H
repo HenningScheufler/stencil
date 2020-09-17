@@ -24,19 +24,19 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::cellToCellStencil
+    Foam::mycellToCellStencil
 
 Description
     baseclass for extended cell centred addressing. Contains per cell a
     list of neighbouring cells and/or boundaryfaces in global addressing.
 
 SourceFiles
-    cellToCellStencil.C
+    mycellToCellStencil.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef cellToCellStencil_H
-#define cellToCellStencil_H
+#ifndef mycellToCellStencil_H
+#define mycellToCellStencil_H
 
 #include "globalIndex.H"
 #include "boolList.H"
@@ -49,14 +49,12 @@ namespace Foam
 {
 
 class polyMesh;
-namespace stencil
-{
 
 /*---------------------------------------------------------------------------*\
-                      Class cellToCellStencil Declaration
+                      Class mycellToCellStencil Declaration
 \*---------------------------------------------------------------------------*/
 
-class cellToCellStencil
+class mycellToCellStencil
 :
     public labelListList
 {
@@ -118,7 +116,7 @@ public:
     // Constructors
 
         //- Construct from mesh
-        explicit cellToCellStencil(const polyMesh&);
+        explicit mycellToCellStencil(const polyMesh&);
 
 
     // Member Functions
@@ -139,7 +137,6 @@ public:
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-} // End namespace stencil
 } // End namespace Foam
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

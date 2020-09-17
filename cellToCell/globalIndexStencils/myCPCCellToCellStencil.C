@@ -25,13 +25,13 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "CPCCellToCellStencil.H"
+#include "myCPCCellToCellStencil.H"
 #include "syncTools.H"
 #include "dummyTransform.H"
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
-void Foam::stencil::CPCCellToCellStencil::calcPointBoundaryData
+void Foam::myCPCCellToCellStencil::calcPointBoundaryData
 (
     const boolList& isValidBFace,
     const labelList& boundaryPoints,
@@ -68,12 +68,11 @@ void Foam::stencil::CPCCellToCellStencil::calcPointBoundaryData
 }
 
 
-void Foam::stencil::CPCCellToCellStencil::calcCellStencil
+void Foam::myCPCCellToCellStencil::calcCellStencil
 (
     labelListList& globalCellCells
 ) const
 {
-    Info << "test " << endl;
     // Calculate points on coupled patches
     labelList boundaryPoints(allCoupledFacesPatch()().meshPoints());
 
@@ -122,39 +121,43 @@ void Foam::stencil::CPCCellToCellStencil::calcCellStencil
 
     // Do remaining points cells
     labelHashSet pointGlobals;
+    labelListList pGlobals(mesh.nPoints());
 
     for (label pointi = 0; pointi < mesh().nPoints(); pointi++)
     {
-        labelList pGlobals
+        pGlobals[pointi] = calcFaceCells
         (
-            calcFaceCells
-            (
-                isValidBFace,
-                mesh().pointFaces()[pointi],
-                pointGlobals
-            )
+            isValidBFace,
+            mesh().pointFaces()[pointi],
+            pointGlobals
         );
+    }
 
-        const labelList& pCells = mesh().pointCells(pointi);
-
-        forAll(pCells, j)
+    // oversized
+    DynamicList<label> neiCells(1000);
+    forAll(globalCellCells,celli)
+    {
+        neiCells.clear();
+        const labelList& cPoints = mesh().cellPoints(pointi);
+        forAll(cPoints, j)
         {
-            label celli = pCells[j];
-
+            label pointi = cPoints[j];
             merge
             (
                 globalNumbering().toGlobal(celli),
-                pGlobals,
+                pGlobals[pointi],
                 globalCellCells[celli]
             );
+
         }
+
     }
 }
 
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::stencil::CPCCellToCellStencil::CPCCellToCellStencil(const polyMesh& mesh)
+Foam::myCPCCellToCellStencil::myCPCCellToCellStencil(const polyMesh& mesh)
 :
     cellToCellStencil(mesh)
 {

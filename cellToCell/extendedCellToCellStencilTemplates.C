@@ -39,7 +39,7 @@ Foam::tmp
         Foam::fvPatchField,
         Foam::volMesh
     >
-> Foam::stencil::extendedCellToCellStencil::weightedSum
+> Foam::extendedCellToCellStencil::weightedSum
 (
     const mapDistribute& map,
     const labelListList& stencil,

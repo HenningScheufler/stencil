@@ -45,9 +45,6 @@ namespace Foam
 {
 
 class cellToCellStencil;
-namespace stencil
-{
-
 
 /*---------------------------------------------------------------------------*\
               Class extendedCentredCellToCellStencil Declaration
@@ -146,7 +143,7 @@ public:
         }
 };
 
-} // End namespace stencil
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 } // End namespace Foam

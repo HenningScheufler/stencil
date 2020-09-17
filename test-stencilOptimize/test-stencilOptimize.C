@@ -41,11 +41,8 @@ Author
 #include "OFstream.H"
 #include "meshTools.H"
 
-#include "extendedCentredCellToCellStencil.H"
-#include "centredCPCCellToCellStencilObject.H"
-
-#include "Random.H"
-#include "zoneDistribute.H"
+#include "myCPCCellToCellStencil.H"
+#include "CPCCellToCellStencil.H"
 
 
 
@@ -61,22 +58,14 @@ int main(int argc, char *argv[])
 
     runTime.cpuTimeIncrement();
 
-    // const extendedCentredCellToCellStencil& addressing =
-    // centredCPCCellToCellStencilObject::New
-    // (
-    //     mesh
-    // );
+    CPCCellToCellStencil addressing(mesh);
 
     Info << "building stencil took " << runTime.cpuTimeIncrement() << " s" << endl;
 
 
     runTime.cpuTimeIncrement();
 
-    const stencil::extendedCentredCellToCellStencil& myaddressing =
-    stencil::centredCPCCellToCellStencilObject::New
-    (
-        mesh
-    );
+    myCPCCellToCellStencil myaddressing(mesh);
 
     Info << "building mystencil took " << runTime.cpuTimeIncrement() << " s" << endl;
 

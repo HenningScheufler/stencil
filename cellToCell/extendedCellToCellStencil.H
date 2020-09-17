@@ -47,9 +47,6 @@ namespace Foam
 {
 
 class globalIndex;
-namespace stencil
-{
-
 
 /*---------------------------------------------------------------------------*\
                   Class extendedCellToCellStencil Declaration
@@ -95,7 +92,7 @@ public:
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-} // End namespace stencil
+
 } // End namespace Foam
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

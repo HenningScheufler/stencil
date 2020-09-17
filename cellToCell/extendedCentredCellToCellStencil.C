@@ -31,7 +31,7 @@ License
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::stencil::extendedCentredCellToCellStencil::extendedCentredCellToCellStencil
+Foam::extendedCentredCellToCellStencil::extendedCentredCellToCellStencil
 (
     const cellToCellStencil& stencil
 )
@@ -55,7 +55,7 @@ Foam::stencil::extendedCentredCellToCellStencil::extendedCentredCellToCellStenci
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-void Foam::stencil::extendedCentredCellToCellStencil::compact()
+void Foam::extendedCentredCellToCellStencil::compact()
 {
     boolList isInStencil(map().constructSize(), false);
 

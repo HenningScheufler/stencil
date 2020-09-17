@@ -24,17 +24,17 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::CPCCellToCellStencil
+    Foam::myCPCCellToCellStencil
 
 Description
 
 SourceFiles
-    CPCCellToCellStencil.C
+    myCPCCellToCellStencil.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef CPCCellToCellStencil_H
-#define CPCCellToCellStencil_H
+#ifndef myCPCCellToCellStencil_H
+#define myCPCCellToCellStencil_H
 
 #include "cellToCellStencil.H"
 #include "boolList.H"
@@ -46,14 +46,11 @@ SourceFiles
 namespace Foam
 {
 
-namespace stencil
-{
-class cellToCellStencil;
 /*---------------------------------------------------------------------------*\
-                    Class CPCCellToCellStencil Declaration
+                    Class myCPCCellToCellStencil Declaration
 \*---------------------------------------------------------------------------*/
 
-class CPCCellToCellStencil
+class myCPCCellToCellStencil
 :
     public cellToCellStencil
 {
@@ -78,14 +75,13 @@ public:
     // Constructors
 
         //- Construct from all cells and boundary faces
-        explicit CPCCellToCellStencil(const polyMesh&);
+        explicit myCPCCellToCellStencil(const polyMesh&);
 
 };
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-} // End namespace stencil
 } // End namespace Foam
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
