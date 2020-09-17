@@ -140,28 +140,24 @@ void Foam::myCPCCellToCellStencil::calcCellStencil
     DynamicList<label> neiCells(1000);
     DynamicList<label> newList(1000);
     labelListList cellPoints = mesh().cellPoints();
-    labelHashSet test;
     forAll(globalCellCells,celli)
     {
-        // neiCells.clear();
-        test.clear();
+        neiCells.clear();
         const labelList& cPoints = cellPoints[celli];
-        // neiCells.append(globalCellCells[celli]);
-        test.insert(globalCellCells[celli]);
-        // sort(neiCells);
+        neiCells.append(globalCellCells[celli]);
+        sort(neiCells);
         for (const label pointi: cPoints)
         {
-            test.insert(pGlobals[pointi]);
-
-            // newList.clear();
-            // for (const label gblIdx:pGlobals[pointi])
-            // {
-            //     if(findSortedIndex(neiCells, gblIdx) != -1)
-            //     {
-            //         newList.append(gblIdx);
-            //     }
-            // }
-            // neiCells.append(newList);
+            newList.clear();
+            for (const label gblIdx:pGlobals[pointi])
+            {
+                if(findSortedIndex(neiCells, gblIdx) != -1)
+                {
+                    newList.append(gblIdx);
+                }
+                // sort(neiCells);
+            }
+            neiCells.append(newList);
 
             // merge
             // (
