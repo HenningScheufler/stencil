@@ -1,0 +1,23 @@
+{
+    "files.associations": {
+        "test-stencilFraction.C": "cpp",
+        "CPCCellToCellStencil.C": "cpp",
+        "myCPCCellToCellStencil.C": "cpp",
+        "centredCPCCellToCellStencilObject.C": "cpp",
+        "mycentredCPCCellToCellStencilObject.C": "cpp",
+        "centredCPCCellToCellStencilObject2.C": "cpp",
+        "test-stencilFraction copy.C": "cpp",
+        "test-stencilOptimize.C": "cpp",
+        "cellToCellStencil.C": "cpp",
+        "centredCECCellToCellStencilObject.C": "cpp",
+        "centredCFCCellToCellStencilObject.C": "cpp",
+        "CECCellToCellStencil.C": "cpp",
+        "mycellToCellStencil.C": "cpp",
+        "extendedCellToCellStencilTemplates.C": "cpp",
+        "extendedCentredCellToCellStencil.C": "cpp",
+        "myextendedCentredCellToCellStencil.C": "cpp",
+        "myextendedCellToCellStencilTemplates.C": "cpp",
+        "extendedCellToCellStencil.C": "cpp",
+        "myextendedCellToCellStencil.C": "cpp"
+    }
+}

@@ -1,0 +1,82 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2006                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : 59c83aa6-20200910 OPENFOAM=2006
+Arch   : "LSB;label=32;scalar=64"
+Exec   : blockMesh
+Date   : Sep 17 2020
+Time   : 10:05:54
+Host   : henning-AB350M-HD3
+PID    : 13098
+I/O    : uncollated
+Case   : /media/henning/ssd1linux/libsAndApps/performanceTests/test-stencilFraction/test-stencilFraction
+nProcs : 1
+trapFpe: Floating point exception trapping enabled (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 5, maxFileModificationPolls 20)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Creating block mesh from "system/blockMeshDict"
+--> FOAM IOWarning :
+    Found [v1012] 'convertToMeters' entry instead of 'scale' in dictionary "/media/henning/ssd1linux/libsAndApps/performanceTests/test-stencilFraction/test-stencilFraction/system/blockMeshDict" 
+
+    This keyword is deemed to be 114 months old.
+
+Creating block edges
+No non-planar block faces defined
+Creating topology blocks
+Creating topology patches
+
+Creating block mesh topology
+
+Check topology
+
+	Basic statistics
+		Number of internal faces : 0
+		Number of boundary faces : 6
+		Number of defined boundary faces : 6
+		Number of undefined boundary faces : 0
+	Checking patch -> block consistency
+
+Creating block offsets
+Creating merge list (topological search)...
+
+Creating polyMesh from blockMesh
+Creating patches
+Creating cells
+Creating points with scale 1
+    Block 0 cell size :
+        i : 0.08 .. 0.08
+        j : 0.08 .. 0.08
+        k : 0.02 .. 0.02
+
+
+There are no merge patch pairs
+
+Writing polyMesh with 0 cellZones
+----------------
+Mesh Information
+----------------
+  boundingBox: (0 0 0) (4 4 4)
+  nPoints: 522801
+  nCells: 500000
+  nFaces: 1522500
+  nInternalFaces: 1477500
+----------------
+Patches
+----------------
+  patch 0 (start: 1477500 size: 10000) name: right
+  patch 1 (start: 1487500 size: 10000) name: left
+  patch 2 (start: 1497500 size: 10000) name: bottom
+  patch 3 (start: 1507500 size: 10000) name: top
+  patch 4 (start: 1517500 size: 2500) name: front
+  patch 5 (start: 1520000 size: 2500) name: back
+
+End
+

@@ -1,0 +1,34 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2006                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : 59c83aa6-20200910 OPENFOAM=2006
+Arch   : "LSB;label=32;scalar=64"
+Exec   : test-stencilFraction
+Date   : Sep 17 2020
+Time   : 10:06:56
+Host   : henning-AB350M-HD3
+PID    : 13140
+I/O    : uncollated
+Case   : /media/henning/ssd1linux/libsAndApps/performanceTests/test-stencilFraction/test-stencilFraction
+nProcs : 1
+trapFpe: Floating point exception trapping enabled (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 5, maxFileModificationPolls 20)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Create mesh for time = 0
+
+building stencil took 267.51 s
+standard stencil took 1.57 s
+standard stencil took 1564387 ms
+standard stencil count 32284590201
+build stencil zoneDistribute took 273.11 s
+build stencil zoneDistribute took 273112129 ms
+zoneDistribute took 164200 ms
+zoneDistribute count 32284590201

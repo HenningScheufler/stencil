@@ -1,0 +1,12 @@
+myextendedCellToCellStencil.C
+myextendedCentredCellToCellStencil.C
+globalIndexStencils/mycellToCellStencil.C
+/*globalIndexStencils/CFCCellToCellStencil.C*/
+globalIndexStencils/myCPCCellToCellStencil.C
+/*globalIndexStencils/CECCellToCellStencil.C*/
+/*MeshObjects/centredCECCellToCellStencilObject.C*/
+/*MeshObjects/centredCFCCellToCellStencilObject.C*/
+MeshObjects/mycentredCPCCellToCellStencilObject.C
+
+
+LIB = $(FOAM_USER_LIBBIN)/libstencil
