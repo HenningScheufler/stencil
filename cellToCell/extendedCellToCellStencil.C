@@ -25,51 +25,33 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "myextendedCentredCellToCellStencil.H"
-#include "mapDistribute.H"
-#include "mycellToCellStencil.H"
+#include "extendedCellToCellStencil.H"
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::myextendedCentredCellToCellStencil::myextendedCentredCellToCellStencil
-(
-    const mycellToCellStencil& stencil
-)
+Foam::stencil::extendedCellToCellStencil::extendedCellToCellStencil(const polyMesh& mesh)
 :
-    myextendedCellToCellStencil(stencil.mesh()),
-    stencil_(stencil)
+    mesh_(mesh)
 {
-    // Calculate distribute map (also renumbers elements in stencil)
-    List<Map<label>> compactMap(Pstream::nProcs());
-    mapPtr_.reset
-    (
-        new mapDistribute
-        (
-            stencil.globalNumbering(),
-            stencil_,
-            compactMap
-        )
-    );
-}
+    // Check for transformation - not supported.
+    const polyBoundaryMesh& patches = mesh.boundaryMesh();
 
-
-// * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
-
-void Foam::myextendedCentredCellToCellStencil::compact()
-{
-    boolList isInStencil(map().constructSize(), false);
-
-    forAll(stencil_, celli)
+    forAll(patches, patchi)
     {
-        const labelList& stencilCells = stencil_[celli];
-
-        forAll(stencilCells, i)
+        if (patches[patchi].coupled())
         {
-            isInStencil[stencilCells[i]] = true;
+            const coupledPolyPatch& cpp =
+                refCast<const coupledPolyPatch>(patches[patchi]);
+
+            if (!cpp.parallel() || cpp.separated())
+            {
+                FatalErrorInFunction
+                    << "Coupled patches with transformations not supported."
+                    << endl
+                    << "Problematic patch " << cpp.name() << exit(FatalError);
+            }
         }
     }
-
-    mapPtr_().compact(isInStencil, Pstream::msgType());
 }
 
 

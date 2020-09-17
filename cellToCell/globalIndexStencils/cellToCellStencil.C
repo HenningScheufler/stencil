@@ -26,14 +26,14 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "mycellToCellStencil.H"
+#include "cellToCellStencil.H"
 #include "syncTools.H"
 #include "SortableList.H"
 #include "emptyPolyPatch.H"
 
 // * * * * * * * * * * * * Protected Member Functions  * * * * * * * * * * * //
 
-void Foam::mycellToCellStencil::merge
+void Foam::stencil::cellToCellStencil::merge
 (
     const label global0,
     const label global1,
@@ -133,7 +133,7 @@ void Foam::mycellToCellStencil::merge
 }
 
 
-void Foam::mycellToCellStencil::merge
+void Foam::stencil::cellToCellStencil::merge
 (
     const label globalI,
     const labelList& pGlobals,
@@ -168,7 +168,7 @@ void Foam::mycellToCellStencil::merge
 }
 
 
-void Foam::mycellToCellStencil::validBoundaryFaces(boolList& isValidBFace) const
+void Foam::stencil::cellToCellStencil::validBoundaryFaces(boolList& isValidBFace) const
 {
     const polyBoundaryMesh& patches = mesh().boundaryMesh();
 
@@ -189,7 +189,7 @@ void Foam::mycellToCellStencil::validBoundaryFaces(boolList& isValidBFace) const
 
 
 Foam::autoPtr<Foam::indirectPrimitivePatch>
-Foam::mycellToCellStencil::allCoupledFacesPatch() const
+Foam::stencil::cellToCellStencil::allCoupledFacesPatch() const
 {
     const polyBoundaryMesh& patches = mesh().boundaryMesh();
 
@@ -230,7 +230,7 @@ Foam::mycellToCellStencil::allCoupledFacesPatch() const
 }
 
 
-void Foam::mycellToCellStencil::insertFaceCells
+void Foam::stencil::cellToCellStencil::insertFaceCells
 (
     const label exclude0,
     const label exclude1,
@@ -282,7 +282,7 @@ void Foam::mycellToCellStencil::insertFaceCells
 }
 
 
-Foam::labelList Foam::mycellToCellStencil::calcFaceCells
+Foam::labelList Foam::stencil::cellToCellStencil::calcFaceCells
 (
     const boolList& isValidBFace,
     const labelList& faceLabels,
@@ -306,7 +306,7 @@ Foam::labelList Foam::mycellToCellStencil::calcFaceCells
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::mycellToCellStencil::mycellToCellStencil(const polyMesh& mesh)
+Foam::stencil::cellToCellStencil::cellToCellStencil(const polyMesh& mesh)
 :
     mesh_(mesh),
     globalNumbering_(mesh_.nCells()+mesh_.nBoundaryFaces())

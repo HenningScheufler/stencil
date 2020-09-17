@@ -24,19 +24,19 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::myextendedCellToCellStencil
+    Foam::extendedCellToCellStencil
 
 Description
     Baseclass for cell-to-cell stencils
 
 SourceFiles
-    myextendedCellToCellStencil.C
-    myextendedCellToCellStencilTemplates.C
+    extendedCellToCellStencil.C
+    extendedCellToCellStencilTemplates.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef myextendedCellToCellStencil_H
-#define myextendedCellToCellStencil_H
+#ifndef extendedCellToCellStencil_H
+#define extendedCellToCellStencil_H
 
 #include "mapDistribute.H"
 #include "volFields.H"
@@ -47,12 +47,15 @@ namespace Foam
 {
 
 class globalIndex;
+namespace stencil
+{
+
 
 /*---------------------------------------------------------------------------*\
-                  Class myextendedCellToCellStencil Declaration
+                  Class extendedCellToCellStencil Declaration
 \*---------------------------------------------------------------------------*/
 
-class myextendedCellToCellStencil
+class extendedCellToCellStencil
 {
 protected:
 
@@ -65,7 +68,7 @@ public:
     // Constructors
 
         //- Construct from mesh
-        explicit myextendedCellToCellStencil(const polyMesh&);
+        explicit extendedCellToCellStencil(const polyMesh&);
 
 
     // Member Functions
@@ -92,13 +95,13 @@ public:
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-
+} // End namespace stencil
 } // End namespace Foam
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 #ifdef NoRepository
-    #include "myextendedCellToCellStencilTemplates.C"
+    #include "extendedCellToCellStencilTemplates.C"
 #endif
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

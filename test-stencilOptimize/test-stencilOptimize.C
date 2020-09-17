@@ -43,7 +43,6 @@ Author
 
 #include "extendedCentredCellToCellStencil.H"
 #include "centredCPCCellToCellStencilObject.H"
-#include "mycentredCPCCellToCellStencilObject.H"
 
 #include "Random.H"
 #include "zoneDistribute.H"
@@ -62,19 +61,19 @@ int main(int argc, char *argv[])
 
     runTime.cpuTimeIncrement();
 
-    const extendedCentredCellToCellStencil& addressing =
-    centredCPCCellToCellStencilObject::New
-    (
-        mesh
-    );
+    // const extendedCentredCellToCellStencil& addressing =
+    // centredCPCCellToCellStencilObject::New
+    // (
+    //     mesh
+    // );
 
     Info << "building stencil took " << runTime.cpuTimeIncrement() << " s" << endl;
 
 
     runTime.cpuTimeIncrement();
 
-    const extendedCentredCellToCellStencil& myaddressing =
-    mycentredCPCCellToCellStencilObject::New
+    const stencil::extendedCentredCellToCellStencil& myaddressing =
+    stencil::centredCPCCellToCellStencilObject::New
     (
         mesh
     );

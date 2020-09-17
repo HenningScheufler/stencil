@@ -25,7 +25,7 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "myextendedCellToCellStencil.H"
+#include "extendedCellToCellStencil.H"
 #include "extendedCellToFaceStencil.H"
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
@@ -39,7 +39,7 @@ Foam::tmp
         Foam::fvPatchField,
         Foam::volMesh
     >
-> Foam::myextendedCellToCellStencil::weightedSum
+> Foam::stencil::extendedCellToCellStencil::weightedSum
 (
     const mapDistribute& map,
     const labelListList& stencil,

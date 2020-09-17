@@ -25,13 +25,13 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "myCPCCellToCellStencil.H"
+#include "CPCCellToCellStencil.H"
 #include "syncTools.H"
 #include "dummyTransform.H"
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
-void Foam::myCPCCellToCellStencil::calcPointBoundaryData
+void Foam::stencil::CPCCellToCellStencil::calcPointBoundaryData
 (
     const boolList& isValidBFace,
     const labelList& boundaryPoints,
@@ -68,11 +68,12 @@ void Foam::myCPCCellToCellStencil::calcPointBoundaryData
 }
 
 
-void Foam::myCPCCellToCellStencil::calcCellStencil
+void Foam::stencil::CPCCellToCellStencil::calcCellStencil
 (
     labelListList& globalCellCells
 ) const
 {
+    Info << "test " << endl;
     // Calculate points on coupled patches
     labelList boundaryPoints(allCoupledFacesPatch()().meshPoints());
 
@@ -120,44 +121,42 @@ void Foam::myCPCCellToCellStencil::calcCellStencil
     neiGlobal.clear();
 
     // Do remaining points cells
-    // labelHashSet pointGlobals;
+    labelHashSet pointGlobals;
 
-    // for (label pointi = 0; pointi < mesh().nPoints(); pointi++)
-    // {
-    //     labelList pGlobals
-    //     (
-    //         calcFaceCells
-    //         (
-    //             isValidBFace,
-    //             mesh().pointFaces()[pointi],
-    //             pointGlobals
-    //         )
-    //     );
+    for (label pointi = 0; pointi < mesh().nPoints(); pointi++)
+    {
+        labelList pGlobals
+        (
+            calcFaceCells
+            (
+                isValidBFace,
+                mesh().pointFaces()[pointi],
+                pointGlobals
+            )
+        );
 
-    //     const labelList& pCells = mesh().pointCells(pointi);
+        const labelList& pCells = mesh().pointCells(pointi);
 
-    //     forAll(pCells, j)
-    //     {
-    //         label celli = pCells[j];
+        forAll(pCells, j)
+        {
+            label celli = pCells[j];
 
-    //         merge
-    //         (
-    //             globalNumbering().toGlobal(celli),
-    //             pGlobals,
-    //             globalCellCells[celli]
-    //         );
-    //     }
-    // }
-
-    // try loop over cells
+            merge
+            (
+                globalNumbering().toGlobal(celli),
+                pGlobals,
+                globalCellCells[celli]
+            );
+        }
+    }
 }
 
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::myCPCCellToCellStencil::myCPCCellToCellStencil(const polyMesh& mesh)
+Foam::stencil::CPCCellToCellStencil::CPCCellToCellStencil(const polyMesh& mesh)
 :
-    mycellToCellStencil(mesh)
+    cellToCellStencil(mesh)
 {
     // Calculate per cell the (point) connected cells (in global numbering)
     labelListList globalCellCells;

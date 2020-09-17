@@ -24,19 +24,19 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::myextendedCentredCellToCellStencil
+    Foam::extendedCentredCellToCellStencil
 
 Description
 
 SourceFiles
-    myextendedCentredCellToCellStencil.C
+    extendedCentredCellToCellStencil.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef myextendedCentredCellToCellStencil_H
-#define myextendedCentredCellToCellStencil_H
+#ifndef extendedCentredCellToCellStencil_H
+#define extendedCentredCellToCellStencil_H
 
-#include "myextendedCellToCellStencil.H"
+#include "extendedCellToCellStencil.H"
 #include "extendedCellToFaceStencil.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -44,15 +44,18 @@ SourceFiles
 namespace Foam
 {
 
-class mycellToCellStencil;
+class cellToCellStencil;
+namespace stencil
+{
+
 
 /*---------------------------------------------------------------------------*\
-              Class myextendedCentredCellToCellStencil Declaration
+              Class extendedCentredCellToCellStencil Declaration
 \*---------------------------------------------------------------------------*/
 
-class myextendedCentredCellToCellStencil
+class extendedCentredCellToCellStencil
 :
-    public myextendedCellToCellStencil
+    public extendedCellToCellStencil
 {
     // Private data
 
@@ -66,13 +69,13 @@ class myextendedCentredCellToCellStencil
     // Private Member Functions
 
         //- No copy construct
-        myextendedCentredCellToCellStencil
+        extendedCentredCellToCellStencil
         (
-            const myextendedCentredCellToCellStencil&
+            const extendedCentredCellToCellStencil&
         ) = delete;
 
         //- No copy assignment
-        void operator=(const myextendedCentredCellToCellStencil&) = delete;
+        void operator=(const extendedCentredCellToCellStencil&) = delete;
 
 
 public:
@@ -80,7 +83,7 @@ public:
     // Constructors
 
         //- Construct from uncompacted cell stencil
-        explicit myextendedCentredCellToCellStencil(const mycellToCellStencil&);
+        explicit extendedCentredCellToCellStencil(const cellToCellStencil&);
 
 
     // Member Functions
@@ -133,7 +136,7 @@ public:
             const List<List<WeightType>>& stencilWeights
         ) const
         {
-            return myextendedCellToCellStencil::weightedSum
+            return extendedCellToCellStencil::weightedSum
             (
                 map(),
                 stencil(),
@@ -143,7 +146,7 @@ public:
         }
 };
 
-
+} // End namespace stencil
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 } // End namespace Foam

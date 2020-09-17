@@ -25,7 +25,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::mycentredCPCCellToCellStencilObject
+    Foam::centredCPCCellToCellStencilObject
 
 Description
 
@@ -33,11 +33,11 @@ SourceFiles
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef mycentredCPCCellToCellStencilObject_H
-#define mycentredCPCCellToCellStencilObject_H
+#ifndef centredCPCCellToCellStencilObject_H
+#define centredCPCCellToCellStencilObject_H
 
 #include "extendedCentredCellToCellStencil.H"
-#include "myCPCCellToCellStencil.H"
+#include "CPCCellToCellStencil.H"
 #include "MeshObject.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -45,29 +45,32 @@ SourceFiles
 namespace Foam
 {
 
+namespace stencil
+{
+
 /*---------------------------------------------------------------------------*\
-              Class mycentredCPCCellToCellStencilObject Declaration
+              Class centredCPCCellToCellStencilObject Declaration
 \*---------------------------------------------------------------------------*/
 
-class mycentredCPCCellToCellStencilObject
+class centredCPCCellToCellStencilObject
 :
     public MeshObject
     <
         fvMesh,
         TopologicalMeshObject,
-        mycentredCPCCellToCellStencilObject
+        centredCPCCellToCellStencilObject
     >,
-    public myextendedCentredCellToCellStencil
+    public extendedCentredCellToCellStencil
 {
 
 public:
 
-    TypeName("mycentredCPCCellToCellStencil");
+    TypeName("centredCPCCellToCellStencil");
 
     // Constructors
 
         //- Construct from uncompacted cell stencil
-        explicit mycentredCPCCellToCellStencilObject
+        explicit centredCPCCellToCellStencilObject
         (
             const fvMesh& mesh
         )
@@ -76,19 +79,20 @@ public:
             <
                 fvMesh,
                 Foam::TopologicalMeshObject,
-                mycentredCPCCellToCellStencilObject
+                centredCPCCellToCellStencilObject
             >(mesh),
-            extendedCentredCellToCellStencil(myCPCCellToCellStencil(mesh))
+            extendedCentredCellToCellStencil(CPCCellToCellStencil(mesh))
         {}
 
 
     //- Destructor
-    virtual ~mycentredCPCCellToCellStencilObject() = default;
+    virtual ~centredCPCCellToCellStencilObject() = default;
 };
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+} // End namespace stencil
 } // End namespace Foam
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

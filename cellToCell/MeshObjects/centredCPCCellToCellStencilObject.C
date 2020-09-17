@@ -5,7 +5,7 @@
     \\  /    A nd           | www.openfoam.com
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
-    Copyright (C) 2013-2016 OpenFOAM Foundation
+    Copyright (C) 2013 OpenFOAM Foundation
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -25,33 +25,17 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "myextendedCellToCellStencil.H"
+#include "centredCPCCellToCellStencilObject.H"
 
-// * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::myextendedCellToCellStencil::myextendedCellToCellStencil(const polyMesh& mesh)
-:
-    mesh_(mesh)
+// * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
+
+namespace Foam
 {
-    // Check for transformation - not supported.
-    const polyBoundaryMesh& patches = mesh.boundaryMesh();
-
-    forAll(patches, patchi)
-    {
-        if (patches[patchi].coupled())
-        {
-            const coupledPolyPatch& cpp =
-                refCast<const coupledPolyPatch>(patches[patchi]);
-
-            if (!cpp.parallel() || cpp.separated())
-            {
-                FatalErrorInFunction
-                    << "Coupled patches with transformations not supported."
-                    << endl
-                    << "Problematic patch " << cpp.name() << exit(FatalError);
-            }
-        }
-    }
+namespace stencil
+{
+    defineTypeNameAndDebug(centredCPCCellToCellStencilObject, 0);
+}
 }
 
 

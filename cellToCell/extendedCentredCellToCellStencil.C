@@ -5,7 +5,7 @@
     \\  /    A nd           | www.openfoam.com
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
-    Copyright (C) 2013 OpenFOAM Foundation
+    Copyright (C) 2013-2016 OpenFOAM Foundation
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -25,14 +25,51 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "mycentredCPCCellToCellStencilObject.H"
+#include "extendedCentredCellToCellStencil.H"
+#include "mapDistribute.H"
+#include "cellToCellStencil.H"
 
+// * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-// * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
-
-namespace Foam
+Foam::stencil::extendedCentredCellToCellStencil::extendedCentredCellToCellStencil
+(
+    const cellToCellStencil& stencil
+)
+:
+    extendedCellToCellStencil(stencil.mesh()),
+    stencil_(stencil)
 {
-    defineTypeNameAndDebug(mycentredCPCCellToCellStencilObject, 0);
+    // Calculate distribute map (also renumbers elements in stencil)
+    List<Map<label>> compactMap(Pstream::nProcs());
+    mapPtr_.reset
+    (
+        new mapDistribute
+        (
+            stencil.globalNumbering(),
+            stencil_,
+            compactMap
+        )
+    );
+}
+
+
+// * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
+
+void Foam::stencil::extendedCentredCellToCellStencil::compact()
+{
+    boolList isInStencil(map().constructSize(), false);
+
+    forAll(stencil_, celli)
+    {
+        const labelList& stencilCells = stencil_[celli];
+
+        forAll(stencilCells, i)
+        {
+            isInStencil[stencilCells[i]] = true;
+        }
+    }
+
+    mapPtr_().compact(isInStencil, Pstream::msgType());
 }
 
 
