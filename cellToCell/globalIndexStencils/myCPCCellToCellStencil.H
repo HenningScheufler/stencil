@@ -36,7 +36,7 @@ SourceFiles
 #ifndef myCPCCellToCellStencil_H
 #define myCPCCellToCellStencil_H
 
-#include "cellToCellStencil.H"
+#include "mycellToCellStencil.H"
 #include "boolList.H"
 #include "HashSet.H"
 #include "Map.H"
@@ -52,7 +52,7 @@ namespace Foam
 
 class myCPCCellToCellStencil
 :
-    public cellToCellStencil
+    public mycellToCellStencil
 {
     // Private Member Functions
 

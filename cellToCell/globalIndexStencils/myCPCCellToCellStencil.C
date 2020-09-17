@@ -121,7 +121,8 @@ void Foam::myCPCCellToCellStencil::calcCellStencil
 
     // Do remaining points cells
     labelHashSet pointGlobals;
-    labelListList pGlobals(mesh.nPoints());
+    labelListList pGlobals(mesh().nPoints());
+    DynamicList<label> faceCells(1000);
 
     for (label pointi = 0; pointi < mesh().nPoints(); pointi++)
     {
@@ -131,25 +132,76 @@ void Foam::myCPCCellToCellStencil::calcCellStencil
             mesh().pointFaces()[pointi],
             pointGlobals
         );
+
+        // pGlobals[pointi] = faceCells;
     }
 
     // oversized
     DynamicList<label> neiCells(1000);
+    DynamicList<label> newList(1000);
+    labelListList cellPoints = mesh().cellPoints();
+    labelHashSet test;
     forAll(globalCellCells,celli)
     {
-        neiCells.clear();
-        const labelList& cPoints = mesh().cellPoints(pointi);
-        forAll(cPoints, j)
+        // neiCells.clear();
+        test.clear();
+        const labelList& cPoints = cellPoints[celli];
+        // neiCells.append(globalCellCells[celli]);
+        test.insert(globalCellCells[celli]);
+        // sort(neiCells);
+        for (const label pointi: cPoints)
         {
-            label pointi = cPoints[j];
-            merge
-            (
-                globalNumbering().toGlobal(celli),
-                pGlobals[pointi],
-                globalCellCells[celli]
-            );
+            test.insert(pGlobals[pointi]);
+
+            // newList.clear();
+            // for (const label gblIdx:pGlobals[pointi])
+            // {
+            //     if(findSortedIndex(neiCells, gblIdx) != -1)
+            //     {
+            //         newList.append(gblIdx);
+            //     }
+            // }
+            // neiCells.append(newList);
+
+            // merge
+            // (
+            //     globalNumbering().toGlobal(celli),
+            //     pGlobals[pointi],
+            //     globalCellCells[celli]
+            // );
 
         }
+        // const label minVal = min(neiCells);
+        // const label maxVal = max(neiCells);
+        // bitSet combine(maxVal-minVal,false);
+        // combine.set(neiCells);
+
+        // globalCellCells[celli] = combine.toc();
+        // for (label& val:globalCellCells[celli])
+        // {
+        //     val += minVal;
+        // }
+
+        // Info << "neiCells" << neiCells << endl;
+        labelList uniqueCells;
+        uniqueOrder(neiCells,uniqueCells);
+
+        globalCellCells[celli].setSize(uniqueCells.size());
+        forAll(uniqueCells,i)
+        {
+            globalCellCells[celli][i] = neiCells[uniqueCells[i]];
+        }
+        // unique is faster than merge
+
+
+        // Info << "globalCellCells[celli]" << globalCellCells[celli] << endl;
+
+        // merge
+        // (
+        //     globalNumbering().toGlobal(celli),
+        //     neiCells,
+        //     globalCellCells[celli]
+        // );
 
     }
 }
@@ -159,7 +211,7 @@ void Foam::myCPCCellToCellStencil::calcCellStencil
 
 Foam::myCPCCellToCellStencil::myCPCCellToCellStencil(const polyMesh& mesh)
 :
-    cellToCellStencil(mesh)
+    mycellToCellStencil(mesh)
 {
     // Calculate per cell the (point) connected cells (in global numbering)
     labelListList globalCellCells;

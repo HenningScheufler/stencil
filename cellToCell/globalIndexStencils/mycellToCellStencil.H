@@ -42,6 +42,7 @@ SourceFiles
 #include "boolList.H"
 #include "HashSet.H"
 #include "indirectPrimitivePatch.H"
+#include "DynamicList.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -109,6 +110,13 @@ protected:
             const labelList& faceLabels,
             labelHashSet& globals
         ) const;
+
+        // void calcFaceCells
+        // (
+        //     const boolList& isValidBFace,
+        //     const labelList& faceLabels,
+        //     DynamicList<label>& globals
+        // ) const;
 
 
 public:
