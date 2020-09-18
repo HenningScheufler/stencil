@@ -79,6 +79,12 @@ protected:
             labelList& listB
         );
 
+        static void uniqueMerge
+        (
+            const labelList& listA,
+            DynamicList<label>& sortedList
+        );
+
         //- Merge two lists and guarantee globalI is first.
         static void merge
         (

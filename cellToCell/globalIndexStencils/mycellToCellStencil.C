@@ -133,6 +133,45 @@ void Foam::mycellToCellStencil::merge
 }
 
 
+void Foam::mycellToCellStencil::uniqueMerge
+(
+    const labelList& listA,
+    DynamicList<label>& sortedList
+)
+{
+    DynamicList<label>::iterator it_low;
+    for (const auto val: listA)
+    {
+        if (sortedList.size() == 0)
+        {
+            sortedList.append(val);
+            continue; // break loop early
+        }
+
+        it_low = std::lower_bound(sortedList.begin(), sortedList.end(), val);
+        if (it_low == sortedList.end())
+        {
+            sortedList.append(val);
+            continue; // break loop early
+        }
+        if (*it_low == val)
+        {
+            continue; // break loop early
+        }
+
+        // insert
+        sortedList.setSize(sortedList.size()+1);
+
+        label start = std::distance(sortedList.begin(), it_low);
+        label tmp = val;
+        for (label i= start;i < sortedList.size();i++)
+        {
+            std::swap(tmp,sortedList[i]);
+        }
+    }
+}
+
+
 void Foam::mycellToCellStencil::merge
 (
     const label globalI,

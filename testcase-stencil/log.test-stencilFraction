@@ -8,12 +8,12 @@
 Build  : 59c83aa6-20200910 OPENFOAM=2006
 Arch   : "LSB;label=32;scalar=64"
 Exec   : test-stencilFraction -parallel
-Date   : Sep 17 2020
-Time   : 10:06:13
+Date   : Sep 18 2020
+Time   : 12:57:08
 Host   : henning-AB350M-HD3
-PID    : 13112
+PID    : 18711
 I/O    : uncollated
-Case   : /media/henning/ssd1linux/libsAndApps/performanceTests/test-stencilFraction/test-stencilFraction
+Case   : /media/henning/ssd1linux/libsAndApps/performanceTests/stencil/testcase-stencil
 nProcs : 4
 Hosts  :
 (
@@ -33,12 +33,15 @@ Create time
 
 Create mesh for time = 0
 
-building stencil took 1.26 s
-standard stencil took 0.03 s
-standard stencil took 17850 ms
-standard stencil count 32465799275
-build stencil zoneDistribute took 1.3 s
-build stencil zoneDistribute took 1300827 ms
-zoneDistribute took 7305 ms
-zoneDistribute count 32465799275
+building stencil
+building CPC stencil took 2.55 s
+build stencil zoneDistribute took 2.36 s
+Collecting data 100 times
+standard stencil took to add all values4.5 s
+standard stencil took to add all values 4499371 ms
+standard stencil count 131471051227
+ 
+zoneDistribute took to add all values 0.94 s
+zoneDistribute took to add all values 938296 ms
+zoneDistribute count 131471051227
 Finalising parallel run

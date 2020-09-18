@@ -8,12 +8,12 @@
 Build  : 59c83aa6-20200910 OPENFOAM=2006
 Arch   : "LSB;label=32;scalar=64"
 Exec   : decomposePar
-Date   : Sep 17 2020
-Time   : 10:06:00
+Date   : Sep 18 2020
+Time   : 12:56:34
 Host   : henning-AB350M-HD3
-PID    : 13102
+PID    : 18590
 I/O    : uncollated
-Case   : /media/henning/ssd1linux/libsAndApps/performanceTests/test-stencilFraction/test-stencilFraction
+Case   : /media/henning/ssd1linux/libsAndApps/performanceTests/stencil/testcase-stencil
 nProcs : 1
 trapFpe: Floating point exception trapping enabled (FOAM_SIGFPE).
 fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 5, maxFileModificationPolls 20)
@@ -31,7 +31,7 @@ Create mesh
 Calculating distribution of cells
 Selecting decompositionMethod scotch [4]
 
-Finished decomposition in 0.8 s
+Finished decomposition in 2.11 s
 
 Calculating original mesh data
 
@@ -44,39 +44,45 @@ Distributing points to processors
 Constructing processor meshes
 
 Processor 0
-    Number of cells = 125417
-    Number of faces shared with processor 1 = 3008
-    Number of processor patches = 1
-    Number of processor faces = 3008
-    Number of boundary faces = 12528
+    Number of cells = 249852
+    Number of faces shared with processor 1 = 5795
+    Number of faces shared with processor 2 = 5555
+    Number of faces shared with processor 3 = 820
+    Number of processor patches = 3
+    Number of processor faces = 12170
+    Number of boundary faces = 14708
 
 Processor 1
-    Number of cells = 125000
-    Number of faces shared with processor 0 = 3008
-    Number of faces shared with processor 2 = 3117
-    Number of processor patches = 2
-    Number of processor faces = 6125
-    Number of boundary faces = 9947
+    Number of cells = 249802
+    Number of faces shared with processor 0 = 5795
+    Number of faces shared with processor 2 = 606
+    Number of faces shared with processor 3 = 5327
+    Number of processor patches = 3
+    Number of processor faces = 11728
+    Number of boundary faces = 15222
 
 Processor 2
-    Number of cells = 124513
-    Number of faces shared with processor 1 = 3117
-    Number of faces shared with processor 3 = 2916
-    Number of processor patches = 2
-    Number of processor faces = 6033
-    Number of boundary faces = 9981
+    Number of cells = 250368
+    Number of faces shared with processor 0 = 5555
+    Number of faces shared with processor 1 = 606
+    Number of faces shared with processor 3 = 5129
+    Number of processor patches = 3
+    Number of processor faces = 11290
+    Number of boundary faces = 15242
 
 Processor 3
-    Number of cells = 125070
-    Number of faces shared with processor 2 = 2916
-    Number of processor patches = 1
-    Number of processor faces = 2916
-    Number of boundary faces = 12544
+    Number of cells = 249978
+    Number of faces shared with processor 0 = 820
+    Number of faces shared with processor 1 = 5327
+    Number of faces shared with processor 2 = 5129
+    Number of processor patches = 3
+    Number of processor faces = 11276
+    Number of boundary faces = 14828
 
-Number of processor faces = 9041
-Max number of cells = 125417 (0.3336% above average 125000)
-Max number of processor patches = 2 (33.333333333333% above average 1.5)
-Max number of faces between processors = 6125 (35.493861298529% above average 4520.5)
+Number of processor faces = 23232
+Max number of cells = 250368 (0.1472% above average 250000)
+Max number of processor patches = 3 (0% above average 3)
+Max number of faces between processors = 12170 (4.7692837465565% above average 11616)
 
 Time = 0
 

@@ -18,6 +18,9 @@
         "myextendedCentredCellToCellStencil.C": "cpp",
         "myextendedCellToCellStencilTemplates.C": "cpp",
         "extendedCellToCellStencil.C": "cpp",
-        "myextendedCellToCellStencil.C": "cpp"
+        "myextendedCellToCellStencil.C": "cpp",
+        "CFCCellToCellStencil.C": "cpp",
+        "CPCCellToCellStencilUniqueList copy.C": "cpp",
+        "CPCCellToCellStencilUniqueListInsert.C": "cpp"
     }
 }

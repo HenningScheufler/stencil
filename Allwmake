@@ -1,0 +1,6 @@
+#!/bin/bash
+
+wmake libso cellToCell
+
+wmake test-stencilFraction
+wmake test-stencilOptimize

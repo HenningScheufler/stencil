@@ -22,42 +22,42 @@ FoamFile
         type            wall;
         inGroups        1(wall);
         nFaces          10000;
-        startFace       1477500;
+        startFace       2970000;
     }
     left
     {
         type            wall;
         inGroups        1(wall);
         nFaces          10000;
-        startFace       1487500;
+        startFace       2980000;
     }
     bottom
     {
         type            wall;
         inGroups        1(wall);
         nFaces          10000;
-        startFace       1497500;
+        startFace       2990000;
     }
     top
     {
         type            wall;
         inGroups        1(wall);
         nFaces          10000;
-        startFace       1507500;
+        startFace       3000000;
     }
     front
     {
         type            empty;
         inGroups        1(empty);
-        nFaces          2500;
-        startFace       1517500;
+        nFaces          10000;
+        startFace       3010000;
     }
     back
     {
         type            empty;
         inGroups        1(empty);
-        nFaces          2500;
-        startFace       1520000;
+        nFaces          10000;
+        startFace       3020000;
     }
 )
 

@@ -2,6 +2,5 @@ time[s],method,nCells
 2.4,standard,1000000
 0.78,combine-merge,1000000
 0.68,combine-unique,1000000
-0.53,combine-unique-binaryInsert,1000000
-0.88,combine-unique-calcFaceCells,1000000
+0.88,combine-unique-binaryInsert,1000000
 1.97,combine-bitSet,1000000

@@ -57,6 +57,8 @@ int main(int argc, char *argv[])
     #include "createTime.H"
     #include "createMesh.H"
 
+    // setup
+
     volScalarField cellNumbers
     (
         IOobject
@@ -93,6 +95,8 @@ int main(int argc, char *argv[])
     boolList selected = maskCells.values();
 
 
+    // building stencil
+    Info<< "building stencil" << endl;
     runTime.cpuTimeIncrement();
 
     const extendedCentredCellToCellStencil& addressing =
@@ -101,43 +105,7 @@ int main(int argc, char *argv[])
         mesh
     );
 
-    Info << "building stencil took " << runTime.cpuTimeIncrement() << " s" << endl;
-
-    // Info<< "cellCellCell:" << endl;
-    // writeStencilStats(addressing.stencil());
-
-    // Collect stencil cell centres
-    runTime.cpuTimeIncrement();
-    scalar startStdStencil  = std::clock();
-
-    List<List<scalar>> stencilCellNums(mesh.nCells());
-    addressing.collectData
-    (
-        cellNumbers,
-        stencilCellNums
-    );
-
-    scalar count = 0;
-    forAll(stencilCellNums,celli)
-    {
-        if(selected[celli])
-        {
-            for (const auto val: stencilCellNums[celli])
-            {
-                count += val;
-            }
-        }
-    }
-
-    reduce(count,sumOp<scalar>());
-
-    scalar endStdStencil  = std::clock();
-
-    Info << "standard stencil took " << runTime.cpuTimeIncrement() << " s" << endl;
-    Info << "standard stencil took " << endStdStencil-startStdStencil << " ms" << endl;
-    Info << "standard stencil count " << count << endl;
-
-    // zoneDistribute
+    Info << "building CPC stencil took " << runTime.cpuTimeIncrement() << " s" << endl;
 
     scalar startZoneDistStencil  = std::clock();
     runTime.cpuTimeIncrement();
@@ -149,33 +117,83 @@ int main(int argc, char *argv[])
 
     scalar endZoneDistStencil  = std::clock();
     Info << "build stencil zoneDistribute took " << runTime.cpuTimeIncrement() << " s" << endl;
-    Info << "build stencil zoneDistribute took " << endZoneDistStencil-startZoneDistStencil << " ms" << endl;
+    // Info << "build stencil zoneDistribute took " << endZoneDistStencil-startZoneDistStencil << " ms" << endl;
+
+    // Info<< "cellCellCell:" << endl;
+    // writeStencilStats(addressing.stencil());
+
+    // Collect stencil cell centres
+    Info<< "Collecting data 100 times" << endl;
+    runTime.cpuTimeIncrement();
+    scalar startStdStencil  = std::clock();
+
+    scalar count = 0;
+
+    for(label i = 0;i<100;i++)
+    {
+        List<List<scalar>> stencilCellNums(mesh.nCells());
+        addressing.collectData
+        (
+            cellNumbers,
+            stencilCellNums
+        );
+
+
+        count = 0;
+        forAll(stencilCellNums,celli)
+        {
+            if(selected[celli])
+            {
+                for (const auto val: stencilCellNums[celli])
+                {
+                    count += val;
+                }
+            }
+        }
+
+        reduce(count,sumOp<scalar>());
+    }
+
+    scalar endStdStencil  = std::clock();
+
+    Info << "standard stencil took to add all values" << runTime.cpuTimeIncrement() << " s" << endl;
+    Info << "standard stencil took to add all values " << endStdStencil-startStdStencil << " ms" << endl;
+    Info << "standard stencil count " << count << endl;
+    Info << " " << endl;
+
+    // zoneDistribute
+    runTime.cpuTimeIncrement();
 
     scalar startZoneDist = std::clock();
-
-    exchangeFields_.setUpCommforZone(selected);
-
-    const labelListList& stencil = exchangeFields_.getStencil();
-
-    Map<scalar> mapCellNum =
-        exchangeFields_.getDatafromOtherProc(selected,cellNumbers);
-
-    count = 0;
-    forAll(selected,celli)
+    for(label i = 0;i<100;i++)
     {
-        if (selected[celli])
-        {
-            for (const label gblIdx : stencil[celli])
-            {
-                count += exchangeFields_.getValue(cellNumbers, mapCellNum, gblIdx);
-            }
 
+        exchangeFields_.setUpCommforZone(selected);
+
+        const labelListList& stencil = exchangeFields_.getStencil();
+
+        Map<scalar> mapCellNum =
+            exchangeFields_.getDatafromOtherProc(selected,cellNumbers);
+
+        count = 0;
+        forAll(selected,celli)
+        {
+            if (selected[celli])
+            {
+                for (const label gblIdx : stencil[celli])
+                {
+                    count += exchangeFields_.getValue(cellNumbers, mapCellNum, gblIdx);
+                }
+
+            }
         }
+        reduce(count,sumOp<scalar>());
+
     }
-    reduce(count,sumOp<scalar>());
     scalar endZoneDist  = std::clock();
 
-    Info << "zoneDistribute took " << endZoneDist-startZoneDist << " ms" << endl;
+    Info << "zoneDistribute took to add all values " << runTime.cpuTimeIncrement() << " s" << endl;
+    Info << "zoneDistribute took to add all values " << endZoneDist-startZoneDist << " ms" << endl;
     Info << "zoneDistribute count " << count << endl;
 
 

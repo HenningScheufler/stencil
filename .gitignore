@@ -97,4 +97,12 @@ doc/Doxygen/DTAGS
 # Ignore the test directory
 /tutorialsTest
 
+#OpenFoam
+
+Cases*
+[1-9]*
+0.[0-9]*
+polyMesh
+log.*
+
 # end-of-file

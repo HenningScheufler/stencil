@@ -41,8 +41,10 @@ Author
 #include "OFstream.H"
 #include "meshTools.H"
 
-#include "myCPCCellToCellStencil.H"
+#include "CPCCellToCellStencilCellBased.H"
 #include "CPCCellToCellStencil.H"
+#include "CPCCellToCellStencilUniqueList.H"
+#include "CPCCellToCellStencilUniqueListInsert.H"
 
 
 
@@ -65,11 +67,24 @@ int main(int argc, char *argv[])
 
     runTime.cpuTimeIncrement();
 
-    myCPCCellToCellStencil myaddressing(mesh);
+    CPCCellToCellStencilCellBased cellBasedaddressing(mesh);
 
-    Info << "building mystencil took " << runTime.cpuTimeIncrement() << " s" << endl;
+    Info << "building  cellbased merge stencil took " << runTime.cpuTimeIncrement() << " s" << endl;
 
 
+    runTime.cpuTimeIncrement();
+
+    CPCCellToCellStencilUniqueList uniqueListaddressing(mesh);
+
+    Info << "building uniqueLists stencil took " << runTime.cpuTimeIncrement() << " s" << endl;
+
+
+
+    runTime.cpuTimeIncrement();
+
+    CPCCellToCellStencilUniqueListInsert uniqueInsertListaddressing(mesh);
+
+    Info << "building uniqueLists stencil took " << runTime.cpuTimeIncrement() << " s" << endl;
 
 
 
