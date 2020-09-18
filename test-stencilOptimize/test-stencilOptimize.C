@@ -49,7 +49,46 @@ Author
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+void checkAddressing
+(
+    const labelListList& stencil1,
+    const labelListList& stencil2
+)
+{
+    bool correct = true;
+    forAll(stencil1,celli)
+    {
+        bool cellCorrect = true;
+        if (stencil1[celli][0] != stencil2[celli][0])
+        {
+            correct = false;
+            cellCorrect = false;
+        }
+        for (const label val:stencil1[celli])
+        {
+            if(!stencil2[celli].found(val))
+            {
+                correct = false;
+                cellCorrect = false;
+            }
+        }
+        if (!cellCorrect)
+        {
+            // Pout << "do not match celli " << celli << endl;
+            // Pout << "stencil2 " << stencil2[celli]  << endl;
+            // Pout << "stencil1                 " << stencil1[celli]  << endl;
+        }
+    }
+    if (correct)
+    {
+        Pout << "stencil is correct" << endl;
+    }
+    else
+    {
+        Pout << "stencil are not match" << endl;
+    }
 
+}
 int main(int argc, char *argv[])
 {
     #include "setRootCase.H"
@@ -63,6 +102,7 @@ int main(int argc, char *argv[])
     CPCCellToCellStencil addressing(mesh);
 
     Info << "building stencil took " << runTime.cpuTimeIncrement() << " s" << endl;
+    // Info << "addressing " << addressing << endl;
 
 
     runTime.cpuTimeIncrement();
@@ -70,6 +110,7 @@ int main(int argc, char *argv[])
     CPCCellToCellStencilCellBased cellBasedaddressing(mesh);
 
     Info << "building  cellbased merge stencil took " << runTime.cpuTimeIncrement() << " s" << endl;
+    // Info << "cellBasedaddressing " << cellBasedaddressing << endl;
 
 
     runTime.cpuTimeIncrement();
@@ -77,6 +118,7 @@ int main(int argc, char *argv[])
     CPCCellToCellStencilUniqueList uniqueListaddressing(mesh);
 
     Info << "building uniqueLists stencil took " << runTime.cpuTimeIncrement() << " s" << endl;
+    // Info << "uniqueListaddressing " << uniqueListaddressing << endl;
 
 
 
@@ -84,7 +126,17 @@ int main(int argc, char *argv[])
 
     CPCCellToCellStencilUniqueListInsert uniqueInsertListaddressing(mesh);
 
-    Info << "building uniqueLists stencil took " << runTime.cpuTimeIncrement() << " s" << endl;
+    Info << "building uniqueListsInsert stencil took " << runTime.cpuTimeIncrement() << " s" << endl;
+    // Info << "uniqueInsertListaddressing " << uniqueInsertListaddressing << endl;
+
+
+    checkAddressing(addressing,cellBasedaddressing);
+    checkAddressing(addressing,uniqueListaddressing);
+    checkAddressing(addressing,uniqueInsertListaddressing);
+
+
+
+
 
 
 

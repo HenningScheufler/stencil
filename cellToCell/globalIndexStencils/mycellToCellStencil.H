@@ -85,6 +85,18 @@ protected:
             DynamicList<label>& sortedList
         );
 
+        static void addToSorted
+        (
+            const label idx,
+            DynamicList<label>& sortedList
+        );
+
+        static void globalFirst
+        (
+            const label globalId,
+            List<label>& sortedList
+        );
+
         //- Merge two lists and guarantee globalI is first.
         static void merge
         (
@@ -117,12 +129,12 @@ protected:
             labelHashSet& globals
         ) const;
 
-        // void calcFaceCells
-        // (
-        //     const boolList& isValidBFace,
-        //     const labelList& faceLabels,
-        //     DynamicList<label>& globals
-        // ) const;
+        void calcFaceCells
+        (
+            const boolList& isValidBFace,
+            const labelList& faceLabels,
+            DynamicList<label>& globals
+        ) const;
 
 
 public:

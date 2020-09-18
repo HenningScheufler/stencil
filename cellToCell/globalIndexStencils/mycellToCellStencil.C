@@ -139,36 +139,76 @@ void Foam::mycellToCellStencil::uniqueMerge
     DynamicList<label>& sortedList
 )
 {
-    DynamicList<label>::iterator it_low;
+    // DynamicList<label>::iterator it_low;
     for (const auto val: listA)
     {
-        if (sortedList.size() == 0)
-        {
-            sortedList.append(val);
-            continue; // break loop early
-        }
-
-        it_low = std::lower_bound(sortedList.begin(), sortedList.end(), val);
-        if (it_low == sortedList.end())
-        {
-            sortedList.append(val);
-            continue; // break loop early
-        }
-        if (*it_low == val)
-        {
-            continue; // break loop early
-        }
-
-        // insert
-        sortedList.setSize(sortedList.size()+1);
-
-        label start = std::distance(sortedList.begin(), it_low);
-        label tmp = val;
-        for (label i= start;i < sortedList.size();i++)
-        {
-            std::swap(tmp,sortedList[i]);
-        }
+        addToSorted(val,sortedList);
     }
+}
+
+
+void Foam::mycellToCellStencil::addToSorted
+(
+    const label idx,
+    DynamicList<label>& sortedList
+)
+{
+    DynamicList<label>::iterator it_low;
+
+    if (sortedList.size() == 0)
+    {
+        sortedList.append(idx);
+        return; // break loop early
+    }
+
+    it_low = std::lower_bound(sortedList.begin(), sortedList.end(), idx);
+    if (it_low == sortedList.end())
+    {
+        sortedList.append(idx);
+        return; // break loop early
+    }
+    if (*it_low == idx)
+    {
+        return; // break loop early
+    }
+
+    // insert
+    sortedList.setSize(sortedList.size()+1);
+
+    // label start = std::distance(sortedList.begin(), it_low);
+    label tmp = idx;
+    // for (label i= start;i < sortedList.size();i++)
+    for (; it_low < sortedList.end(); it_low++)
+    {
+        std::swap(tmp,*it_low);
+    }
+
+}
+
+
+void Foam::mycellToCellStencil::globalFirst
+(
+    const label globalId,
+    List<label>& sortedList
+)
+{
+    if (sortedList.size() <= 1)
+    {
+        return;
+    }
+
+    List<label>::iterator elem_it;
+    elem_it = std::find(sortedList.begin(), sortedList.end(), globalId);
+
+    List<label>::iterator it = sortedList.begin();
+    label tmp = *it;
+    *it = globalId;
+    ++it;
+    for (; it <= elem_it; ++it)
+    {
+        std::swap(tmp,*it);
+    }
+
 }
 
 
@@ -342,6 +382,51 @@ Foam::labelList Foam::mycellToCellStencil::calcFaceCells
     return globals.toc();
 }
 
+
+void Foam::mycellToCellStencil::calcFaceCells
+(
+    const boolList& isValidBFace,
+    const labelList& faceLabels,
+    DynamicList<label>& globals
+) const
+{
+    globals.clear();
+
+    const labelList& own = mesh().faceOwner();
+    const labelList& nei = mesh().faceNeighbour();
+    const globalIndex& gblNum = globalNumbering();
+
+    forAll(faceLabels, i)
+    {
+        label facei = faceLabels[i];
+
+        label globalOwn = gblNum.toGlobal(own[facei]);
+        addToSorted(globalOwn,globals);
+
+        if (mesh().isInternalFace(facei))
+        {
+            label globalNei = gblNum.toGlobal(nei[facei]);
+            addToSorted(globalNei,globals);
+        }
+        else
+        {
+            label bFacei = facei-mesh().nInternalFaces();
+
+            if (isValidBFace[bFacei])
+            {
+                label globalI = gblNum.toGlobal
+                (
+                    mesh().nCells()
+                  + bFacei
+                );
+
+                addToSorted(globalI,globals);
+
+            }
+        }
+    }
+
+}
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 

@@ -9,7 +9,6 @@ runApplication blockMesh
 restore0Dir
 
 runApplication decomposePar
-#runApplication $(getApplication)
 runParallel test-stencilOptimize
 runParallel test-stencilFraction
 

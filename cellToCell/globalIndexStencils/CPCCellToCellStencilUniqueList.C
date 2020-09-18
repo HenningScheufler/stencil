@@ -157,6 +157,8 @@ void Foam::CPCCellToCellStencilUniqueList::calcCellStencil
         {
             globalCellCells[celli][i] = neiCells[uniqueCells[i]];
         }
+
+        globalFirst(globalNumbering().toGlobal(celli),globalCellCells[celli]);
     }
 }
 

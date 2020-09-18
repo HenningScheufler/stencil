@@ -126,14 +126,14 @@ void Foam::CPCCellToCellStencilUniqueListInsert::calcCellStencil
 
     for (label pointi = 0; pointi < mesh().nPoints(); pointi++)
     {
-        pGlobals[pointi] = calcFaceCells
+        calcFaceCells
         (
             isValidBFace,
             mesh().pointFaces()[pointi],
-            pointGlobals
+            faceCells // reset in function
         );
 
-        // pGlobals[pointi] = faceCells;
+        pGlobals[pointi] = faceCells;
     }
 
     // oversized
@@ -142,87 +142,14 @@ void Foam::CPCCellToCellStencilUniqueListInsert::calcCellStencil
     forAll(globalCellCells,celli)
     {
         neiCells.clear();
-        // Info << "celli celli celli celli celli " << celli << endl;
         const labelList& cPoints = cellPoints[celli];
-        neiCells.append(globalCellCells[celli]); // assume unique and sorted
-        DynamicList<label>::iterator it_low;
+        uniqueMerge(globalCellCells[celli],neiCells);
         for (const label pointi: cPoints)
         {
-            // neiCells.append(pGlobals[pointi]);
-            // Info << "neiCells " << neiCells << endl;
-            // Info << "pGlobals[pointi] " << pGlobals[pointi] << endl;
-            label count = 0;
-            for (const auto val: pGlobals[pointi])
-            {
-                // Info << "val " << val << "count " << count << endl;
-                count++;
-                if (neiCells.size() == 0)
-                {
-                    // Info << "no size" << endl;
-                    neiCells.append(val);
-                    continue; // break loop early
-                }
-                // Info << "neiCells " << neiCells << endl;
-                it_low = std::lower_bound(neiCells.begin(), neiCells.end(), val);
-                if (it_low == neiCells.end())
-                {
-                    // Info << "it low equals end" << endl;
-                    neiCells.append(val);
-                    // Info << "changed neiCells " << neiCells << endl;
-                    continue; // break loop early
-                }
-                if (*it_low == val)
-                {
-                    // Info << "identical value " <<  val << endl;
-                    // neiCells.append(val);
-                    continue; // break loop early
-                }
+            uniqueMerge(pGlobals[pointi],neiCells);
 
-                // insert
-                // Info << "insert " << endl;
-                neiCells.setSize(neiCells.size()+1);
-                // Info << "low " << std::distance(neiCells.begin(), it_low) << " val_low " << *it_low << endl;
-
-                // it_low++;
-
-                label start = std::distance(neiCells.begin(), it_low);
-                // label tmp = *it_low;
-                // *it_low = val;
-                label tmp = val;
-                // Info << "inserting val " << val << " " << " to neiCells " << neiCells  << endl;
-                // Info << "tmp " << tmp << endl;
-                // Info << "*it_low " << *it_low << endl;
-                for (label i= start;i < neiCells.size();i++)
-                {
-                    std::swap(tmp,neiCells[i]);
-                    // neiCells[i] = tmp;
-                    // tmp = neiCells[i+1];
-                }
-                // Info << "inserting to neiCells " << neiCells << endl;
-                // while(it_low != neiCells.end())
-                // {
-                    // Info << "it_low " << *it_low << " tmp " << tmp <<  endl;
-                    // *i = tmp;
-                    // tmp = *(i+1);
-                    // *it_low = tmp;
-                // }
-
-
-                // neiCells.setSize(neiCells.size()+1);
-
-                // for (DynamicList<label>::iterator i = it_low;i != neiCells.end();++i)
-                // {
-                //     Info << "iterator " << *i << endl;
-                // }
-                // Info << "low " << std::distance(neiCells.begin(), it_low) << " val_low " << *it_low << endl;
-
-                // Info << "it pos " << it_low-neiCells.begin() << endl;
-                // Info << "neiCells.end() " << neiCells.end() << endl;
-
-
-                // neiCells.insert(low,val)
-            }
         }
+        globalFirst(globalNumbering().toGlobal(celli),neiCells);
 
         globalCellCells[celli] = neiCells;
 

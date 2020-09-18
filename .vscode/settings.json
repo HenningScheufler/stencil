@@ -21,6 +21,8 @@
         "myextendedCellToCellStencil.C": "cpp",
         "CFCCellToCellStencil.C": "cpp",
         "CPCCellToCellStencilUniqueList copy.C": "cpp",
-        "CPCCellToCellStencilUniqueListInsert.C": "cpp"
+        "CPCCellToCellStencilUniqueListInsert.C": "cpp",
+        "CPCCellToCellStencilCellBased.C": "cpp",
+        "CPCCellToCellStencilUniqueList.C": "cpp"
     }
 }
