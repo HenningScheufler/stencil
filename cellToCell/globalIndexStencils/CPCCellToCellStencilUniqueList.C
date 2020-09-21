@@ -28,6 +28,7 @@ License
 #include "CPCCellToCellStencilUniqueList.H"
 #include "syncTools.H"
 #include "dummyTransform.H"
+#include "profiling.H"
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
@@ -73,6 +74,7 @@ void Foam::CPCCellToCellStencilUniqueList::calcCellStencil
     labelListList& globalCellCells
 ) const
 {
+    addProfiling(stencil, "CPCCellToCellStencilUniqueList::calcCellStencil");
     // Calculate points on coupled patches
     labelList boundaryPoints(allCoupledFacesPatch()().meshPoints());
 
@@ -158,7 +160,7 @@ void Foam::CPCCellToCellStencilUniqueList::calcCellStencil
             globalCellCells[celli][i] = neiCells[uniqueCells[i]];
         }
 
-        globalFirst(globalNumbering().toGlobal(celli),globalCellCells[celli]);
+        moveIndexToStart(globalNumbering().toGlobal(celli),globalCellCells[celli]);
     }
 }
 

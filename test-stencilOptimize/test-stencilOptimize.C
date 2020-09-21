@@ -45,6 +45,7 @@ Author
 #include "CPCCellToCellStencil.H"
 #include "CPCCellToCellStencilUniqueList.H"
 #include "CPCCellToCellStencilUniqueListInsert.H"
+#include "CPCCellToCellStencilCellBasedBitSet.H"
 
 
 
@@ -129,6 +130,11 @@ int main(int argc, char *argv[])
     Info << "building uniqueListsInsert stencil took " << runTime.cpuTimeIncrement() << " s" << endl;
     // Info << "uniqueInsertListaddressing " << uniqueInsertListaddressing << endl;
 
+    runTime.cpuTimeIncrement();
+
+    CPCCellToCellStencilCellBasedBitSet bitSetAddressing(mesh);
+
+    Info << "building bitSetAddressing stencil took " << runTime.cpuTimeIncrement() << " s" << endl;
 
     checkAddressing(addressing,cellBasedaddressing);
     checkAddressing(addressing,uniqueListaddressing);
@@ -136,10 +142,10 @@ int main(int argc, char *argv[])
 
 
 
+    profiling::writeNow();
 
-
-
-
+    OFstream profData("profData.dat");
+    Foam::profiling::print(profData);
 
     return 0;
 }

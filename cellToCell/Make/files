@@ -2,7 +2,10 @@
 globalIndexStencils/mycellToCellStencil.C
 /*globalIndexStencils/CFCCellToCellStencil.C*/
 globalIndexStencils/CPCCellToCellStencilUniqueList.C
+globalIndexStencils/CPCCellToCellStencilCellBasedBitSet.C
 globalIndexStencils/CPCCellToCellStencilCellBased.C
 globalIndexStencils/CPCCellToCellStencilUniqueListInsert.C
+regionCelltoCellStencil/regionCelltoCellStencil.C
+regionCelltoCellStencil/stencilLoop.C
 
 LIB = $(FOAM_USER_LIBBIN)/libstencil

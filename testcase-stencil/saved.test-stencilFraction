@@ -1,0 +1,72 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2006                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : 59c83aa6-20200910 OPENFOAM=2006
+Arch   : "LSB;label=32;scalar=64"
+Exec   : test-stencilFraction -parallel
+Date   : Sep 21 2020
+Time   : 17:18:52
+Host   : henning-AB350M-HD3
+PID    : 9387
+I/O    : uncollated
+Case   : /media/henning/ssd1linux/libsAndApps/performanceTests/stencil/testcase-stencil
+nProcs : 4
+Hosts  :
+(
+    (henning-AB350M-HD3 4)
+)
+Pstream initialized with:
+    floatTransfer      : 0
+    nProcsSimpleSum    : 0
+    commsType          : nonBlocking
+    polling iterations : 0
+trapFpe: Floating point exception trapping enabled (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 5, maxFileModificationPolls 20)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+profiling initialized
+Create mesh for time = 0
+
+building stencil
+building CPC stencil took 2.53 s
+build stencil zoneDistribute took 2.36 s
+Collecting data 100 times
+standard stencil took to add all values4.32 s
+standard stencil took to add all values 4324049 µs
+standard stencil took to add all values 4324049 µs
+countCollectData 2894139 µs
+countLooping 190592 µs
+standard stencil count 131471404027
+
+zoneDistribute took to add all values 0.41 s
+zoneDistribute took to add all values 402416 µs
+countCollectData 234091 µs
+countLooping 158046 µs
+zoneDistribute count 131471404027
+nSelectedCells 2488
+mesh.nCells() 249852
+Time difference = 7712[µs]
+Time difference = 7712220[ns]
+Time difference = 14316[µs]
+Time difference = 14316905[ns]
+Time difference = 14537[µs]
+Time difference = 14537437[ns]
+Time difference = 15535[µs]
+Time difference = 15535232[ns]
+BestCase took to add all values 0.07 s
+BestCase took to add all values 15529 µs
+BestCase countCollectData 0 µs
+BestCase countLooping 15500 µs
+BestCase count 131471404027
+Adding all took to add all values 0.81 s
+Adding all values countLooping 812698 µs
+Adding all took to add all values 0.03 s
+Adding all values countLooping 26730 µs
+Finalising parallel run

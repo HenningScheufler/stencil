@@ -47,6 +47,8 @@ Author
 #include "Random.H"
 #include "zoneDistribute.H"
 
+#include <chrono>
+
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -70,8 +72,8 @@ int main(int argc, char *argv[])
             IOobject::NO_WRITE
         ),
         mesh,
-        dimensionedScalar("0",dimless,0),
-        "zeroGradient"
+        dimensionedScalar("0",dimless,100),
+        "calculated"
     );
     globalIndex globalNumbering(mesh.nCells());
 
@@ -117,7 +119,7 @@ int main(int argc, char *argv[])
 
     scalar endZoneDistStencil  = std::clock();
     Info << "build stencil zoneDistribute took " << runTime.cpuTimeIncrement() << " s" << endl;
-    // Info << "build stencil zoneDistribute took " << endZoneDistStencil-startZoneDistStencil << " ms" << endl;
+    // Info << "build stencil zoneDistribute took " << endZoneDistStencil-startZoneDistStencil << " µs" << endl;
 
     // Info<< "cellCellCell:" << endl;
     // writeStencilStats(addressing.stencil());
@@ -127,20 +129,28 @@ int main(int argc, char *argv[])
     runTime.cpuTimeIncrement();
     scalar startStdStencil  = std::clock();
 
+    scalar countCollectData = 0;
+    scalar countLooping = 0;
+
+
     scalar count = 0;
 
     for(label i = 0;i<100;i++)
     {
+        countCollectData -=  std::clock();
         List<List<scalar>> stencilCellNums(mesh.nCells());
+
         addressing.collectData
         (
             cellNumbers,
             stencilCellNums
         );
+        countCollectData +=  std::clock();
 
 
         count = 0;
-        forAll(stencilCellNums,celli)
+        countLooping -=  std::clock();
+        forAll(selected,celli)
         {
             if(selected[celli])
             {
@@ -152,12 +162,18 @@ int main(int argc, char *argv[])
         }
 
         reduce(count,sumOp<scalar>());
+        countLooping +=  std::clock();
     }
 
     scalar endStdStencil  = std::clock();
 
     Info << "standard stencil took to add all values" << runTime.cpuTimeIncrement() << " s" << endl;
-    Info << "standard stencil took to add all values " << endStdStencil-startStdStencil << " ms" << endl;
+    Info << "standard stencil took to add all values " << endStdStencil-startStdStencil << " µs" << endl;
+    Info << "standard stencil took to add all values " << endStdStencil-startStdStencil << " µs" << endl;
+    Info << "countCollectData " << countCollectData << " µs" << endl;
+    Info << "countLooping " << countLooping << " µs" << endl;
+
+
     Info << "standard stencil count " << count << endl;
     Info << " " << endl;
 
@@ -165,16 +181,21 @@ int main(int argc, char *argv[])
     runTime.cpuTimeIncrement();
 
     scalar startZoneDist = std::clock();
+    countCollectData = 0;
+    countLooping = 0;
     for(label i = 0;i<100;i++)
     {
-
-        exchangeFields_.setUpCommforZone(selected);
+        countCollectData -=  std::clock();
+        exchangeFields_.setUpCommforZone(selected,false);
 
         const labelListList& stencil = exchangeFields_.getStencil();
 
+
         Map<scalar> mapCellNum =
             exchangeFields_.getDatafromOtherProc(selected,cellNumbers);
+        countCollectData +=  std::clock();
 
+        countLooping -=  std::clock();
         count = 0;
         forAll(selected,celli)
         {
@@ -189,17 +210,155 @@ int main(int argc, char *argv[])
         }
         reduce(count,sumOp<scalar>());
 
+        countLooping +=  std::clock();
+
     }
     scalar endZoneDist  = std::clock();
 
     Info << "zoneDistribute took to add all values " << runTime.cpuTimeIncrement() << " s" << endl;
-    Info << "zoneDistribute took to add all values " << endZoneDist-startZoneDist << " ms" << endl;
+    Info << "zoneDistribute took to add all values " << endZoneDist-startZoneDist << " µs" << endl;
+    Info << "countCollectData " << countCollectData << " µs" << endl;
+    Info << "countLooping " << countLooping << " µs" << endl;
+
     Info << "zoneDistribute count " << count << endl;
 
 
+    // best case scenario looping
+    runTime.cpuTimeIncrement();
+
+
+    List<List<scalar>> stencilCellNums(mesh.nCells());
+    label nSelectedCells = 0;
+
+    for (auto sel: selected)
+    {
+        if(sel)
+        {
+            nSelectedCells++;
+        }
+    }
+    Info << "nSelectedCells " << nSelectedCells << endl;
+    Info << "mesh.nCells() " << mesh.nCells() << endl;
+
+    addressing.collectData
+    (
+        cellNumbers,
+        stencilCellNums
+    );
+
+    List<List<scalar>> selectedStencilCells(nSelectedCells);
+    forAll(selected,celli)
+    {
+        if(selected[celli])
+        {
+            selectedStencilCells.append(stencilCellNums[celli]);
+        }
+    }
+    scalar startBestCase = std::clock();
+    countCollectData = 0;
+    countLooping = 0;
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+
+
+    for(label i = 0;i<100;i++)
+    {
+
+        count = 0;
+        countLooping -=  std::clock();
+        for (const auto& stencilVal: selectedStencilCells)
+        {
+            for (const auto& val: stencilVal)
+            {
+                count += val;
+            }
+        }
+
+        reduce(count,sumOp<scalar>());
+        countLooping +=  std::clock();
+
+    }
+    scalar endBestCase  = std::clock();
+
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+
+    std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "[µs]" << std::endl;
+    std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::nanoseconds> (end - begin).count() << "[ns]" << std::endl;
+
+    Info << "BestCase took to add all values " << runTime.cpuTimeIncrement() << " s" << endl;
+    Info << "BestCase took to add all values " << endBestCase-startBestCase << " µs" << endl;
+    Info << "BestCase countCollectData " << countCollectData << " µs" << endl;
+    Info << "BestCase countLooping " << countLooping << " µs" << endl;
+
+    Info << "BestCase count " << count << endl;
+
+    // adding all values
+    scalar startAddingAll = std::clock();
+    runTime.cpuTimeIncrement();
+
+    for(label i = 0;i<100;i++)
+    {
+
+        count = 0;
+        countLooping -=  std::clock();
+        for (const auto& stencilVal: stencilCellNums)
+        {
+            for (const auto& val: stencilVal)
+            {
+                count += val;
+            }
+        }
+
+        reduce(count,sumOp<scalar>());
+        countLooping +=  std::clock();
+
+    }
+
+    scalar endAddingAll = std::clock();
+    Info << "Adding all took to add all values " << runTime.cpuTimeIncrement() << " s" << endl;
+    Info << "Adding all values countLooping " << endAddingAll-startAddingAll  << " µs" << endl;
+
+
+        // adding all values
+    scalar startBitSet = std::clock();
+    runTime.cpuTimeIncrement();
+    labelList cellis = maskCells.toc();
+
+    for(label i = 0;i<100;i++)
+    {
+
+        count = 0;
+        countLooping -=  std::clock();
+        // for (const auto& stencilVal: stencilCellNums)
+        // {
+        //     for (const auto& val: stencilVal)
+        //     {
+        //         count += val;
+        //     }
+        // }
+        // forAll(selected,celli)
+        for (const label& celli: cellis)
+        {
+            // if(selected[celli])
+            // {
+                for (const auto val: stencilCellNums[celli])
+                {
+                    count += val;
+                }
+            // }
+        }
+
+        reduce(count,sumOp<scalar>());
+        countLooping +=  std::clock();
+
+    }
+
+    scalar endBitSet = std::clock();
+    Info << "Adding bitset took to add all values " << runTime.cpuTimeIncrement() << " s" << endl;
+    Info << "Adding bitSet values countLooping " << endBitSet-startBitSet  << " µs" << endl;
 
 
 
+    profiling::writeNow();
 
 
 

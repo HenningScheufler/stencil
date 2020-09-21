@@ -79,19 +79,22 @@ protected:
             labelList& listB
         );
 
+        //- merge to list without any duplicates
         static void uniqueMerge
         (
             const labelList& listA,
             DynamicList<label>& sortedList
         );
 
-        static void addToSorted
+        //- add index to sort list and keeps the list unqiue and sorted
+        static void addToSortedList
         (
             const label idx,
             DynamicList<label>& sortedList
         );
 
-        static void globalFirst
+        //- move the index to the beginning fatal error if index is not found
+        static void moveIndexToStart
         (
             const label globalId,
             List<label>& sortedList

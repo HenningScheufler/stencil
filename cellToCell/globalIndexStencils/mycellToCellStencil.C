@@ -142,12 +142,12 @@ void Foam::mycellToCellStencil::uniqueMerge
     // DynamicList<label>::iterator it_low;
     for (const auto val: listA)
     {
-        addToSorted(val,sortedList);
+        addToSortedList(val,sortedList);
     }
 }
 
 
-void Foam::mycellToCellStencil::addToSorted
+void Foam::mycellToCellStencil::addToSortedList
 (
     const label idx,
     DynamicList<label>& sortedList
@@ -186,7 +186,7 @@ void Foam::mycellToCellStencil::addToSorted
 }
 
 
-void Foam::mycellToCellStencil::globalFirst
+void Foam::mycellToCellStencil::moveIndexToStart
 (
     const label globalId,
     List<label>& sortedList
@@ -199,6 +199,14 @@ void Foam::mycellToCellStencil::globalFirst
 
     List<label>::iterator elem_it;
     elem_it = std::find(sortedList.begin(), sortedList.end(), globalId);
+    if (elem_it == std::end(sortedList))
+    {
+        FatalErrorInFunction
+            << "index not found in sortedList: "
+            << sortedList
+            << exit(FatalError);
+    }
+
 
     List<label>::iterator it = sortedList.begin();
     label tmp = *it;
@@ -401,12 +409,12 @@ void Foam::mycellToCellStencil::calcFaceCells
         label facei = faceLabels[i];
 
         label globalOwn = gblNum.toGlobal(own[facei]);
-        addToSorted(globalOwn,globals);
+        addToSortedList(globalOwn,globals);
 
         if (mesh().isInternalFace(facei))
         {
             label globalNei = gblNum.toGlobal(nei[facei]);
-            addToSorted(globalNei,globals);
+            addToSortedList(globalNei,globals);
         }
         else
         {
@@ -420,7 +428,7 @@ void Foam::mycellToCellStencil::calcFaceCells
                   + bFacei
                 );
 
-                addToSorted(globalI,globals);
+                addToSortedList(globalI,globals);
 
             }
         }

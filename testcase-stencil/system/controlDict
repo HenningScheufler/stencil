@@ -60,4 +60,12 @@ maxAlphaCo      1.0;
 maxDeltaT       0.005;
 
 
+profiling
+{
+    active      true;
+    cpuInfo     false;
+    memInfo     false;
+    sysInfo     false;
+}
+
 // ************************************************************************* //
