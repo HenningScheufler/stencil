@@ -111,11 +111,11 @@ inline typename Foam::stencilLoop<Type>::const_iterator Foam::stencilLoop<Type>:
 template<class Type>
 inline typename Foam::stencilLoop<Type>::const_iterator Foam::stencilLoop<Type>::end() const noexcept
 {
-    return const_iterator(this,this->size());
+    return const_iterator(this,neiIdx_.size());
 }
 
 template<class Type>
 inline typename Foam::stencilLoop<Type>::const_iterator Foam::stencilLoop<Type>::cend() const noexcept
 {
-    return const_iterator(this,this->size());
+    return const_iterator(this,neiIdx_.size());
 }

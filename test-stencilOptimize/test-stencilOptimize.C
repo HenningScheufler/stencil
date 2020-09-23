@@ -144,7 +144,7 @@ int main(int argc, char *argv[])
 
     profiling::writeNow();
 
-    OFstream profData("profData.dat");
+    OFstream profData("profiling_stencilOptimize.dat");
     Foam::profiling::print(profData);
 
     return 0;

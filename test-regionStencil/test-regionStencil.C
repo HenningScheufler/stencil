@@ -44,8 +44,9 @@ Author
 #include "stencilLoop.H"
 #include "regionCelltoCellStencil.H"
 #include "CPCCellToCellStencil.H"
-
-
+#include "extendedCelltoCellStencilLooper.H"
+#include "extendedCentredCellToCellStencil.H"
+#include "centredCPCCellToCellStencilObject.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -76,26 +77,26 @@ int main(int argc, char *argv[])
         cellNumbers[celli] = globalNumbering.toGlobal(celli) + 100;
     }
 
-    labelList test = identity(mesh.nCells());
-    stencilLoop<scalar> loop(test,cellNumbers);
+    // labelList test = identity(mesh.nCells());
+    // stencilLoop<scalar> loop(test,cellNumbers);
 
-    // test operator
-    forAll(loop,i)
-    {
-        Info << "loop operator [] " << loop[i] << endl;
-        Info << "indices " << loop.indices()[i] << endl;
-    }
+    // // test operator
+    // forAll(loop,i)
+    // {
+    //     Info << "loop operator [] " << loop[i] << endl;
+    //     Info << "indices " << loop.indices()[i] << endl;
+    // }
 
-    // test iterators
-    for (auto& a:loop)
-    {
-        Info<< "non const loop " << a << endl;
-    }
+    // // test iterators
+    // for (auto& a:loop)
+    // {
+    //     Info<< "non const loop " << a << endl;
+    // }
 
-    for (const auto& a:loop)
-    {
-        Info<< "const loop " << a << endl;
-    }
+    // for (const auto& a:loop)
+    // {
+    //     Info<< "const loop " << a << endl;
+    // }
 
     runTime.cpuTimeIncrement();
 
@@ -112,20 +113,86 @@ int main(int argc, char *argv[])
     Map<scalar> mapTest;
     mapTest.insert(1,20.0);
 
-    Info << " addressing " << addressing << endl;
+    // Info << " addressing " << addressing << endl;
 
-    regionCelltoCellStencil rStencil(selectedCells,addressing);
+    const extendedCentredCellToCellStencil& stdCPCstencil =
+        centredCPCCellToCellStencilObject::New(mesh);
 
-    Info << " rStencil setncil " << rStencil.stencil() << endl;
+            // tmp<mapDistribute>& tmapPtr_,
+            // tmp<labelListList>& tstencil_,
+            // const GeometricField<Type, Foam::fvPatchField, Foam::volMesh>& fld
+    // tmp<mapDistribute> tmapPtr (new mapDistribute(stdCPCstencil.map()));
+    // tmp<labelListList> tstencil (new labelListList(stdCPCstencil.stencil()));
 
-    // List<List<vector>> stencilValues;
-    // rStencil.collectData
-    // (
-    //     mesh.C(),
-    //     stencilValues
-    // );
+    extendedCelltoCellStencilLooper<scalar> stencilLooper
+    (
+        stdCPCstencil.map(),
+        stdCPCstencil.stencil(),
+        cellNumbers
+    );
+
+        // 1. Construct cell data in compact addressing
+    List<scalar> flatFld(stencilLooper.map().constructSize(), Zero);
+
+    // Insert my internal values
+    forAll(cellNumbers, celli)
+    {
+        flatFld[celli] = cellNumbers[celli];
+    }
+    // Insert my boundary values
+    forAll(cellNumbers.boundaryField(), patchi)
+    {
+        const fvPatchField<scalar>& pfld = cellNumbers.boundaryField()[patchi];
+
+        label nCompact =
+            pfld.patch().start()
+           -cellNumbers.mesh().nInternalFaces()
+           +cellNumbers.mesh().nCells();
+
+        forAll(pfld, i)
+        {
+            flatFld[nCompact++] = pfld[i];
+        }
+    }
+
+    // Do all swapping
+    stencilLooper.map().distribute(flatFld);
+
+    // Info << "flatFld " << flatFld << endl;
+
+    // Info << "stencilLoop flatFld " << stencilLoop.flatField() << endl;
+
+
+    List<List<scalar>> stencilValues;
+    stencilLooper.collectData
+    (
+        stencilValues
+    );
 
     // Info << " stencilValues " << stencilValues << endl;
+
+    // labelList stencilASd = stencilLoop[0];
+    // Field<scalar> testFld(flatFld);
+    // labelList test = identity(mesh.nCells())
+
+    // stencilLoop<scalar> loop(test,cellNumbers);
+    // stencilLoop<scalar> looptest(test,testFld);
+
+    forAll(stencilLooper,celli)
+    {
+        stencilLoop<scalar> loop = stencilLooper[celli];
+
+        // forAll(loop,i)
+        // {
+        //     Info << "loop operator [] " << loop[i] << endl;
+        //     Info << "indices " << loop.indices()[i] << endl;
+        // }
+
+        for (const auto& a:loop)
+        {
+            Info<< "const loop " << a << endl;
+        }
+    }
 
 
 

@@ -1,0 +1,15 @@
+description,id,calls,totalTime,childTime,active,parentId
+application::main,0,1,23.323731821,21.85625493,true,
+profBuildStencil,1,1,4.868848139,0,false,0
+partialStdStencil,2,1,4.404452992,2.915400788,false,0
+partialStdStencilbuildStencil,3,100,2.915400788,0,false,2
+partialZoneDist,4,1,0.414587124,0.243461727,false,0
+partialZoneDistbuildStencil,5,100,0.243461727,0,false,4
+partialStencilLooper,6,1,0.413210464,0.256869389,false,0
+partialStencilLooperbuildStencil,7,100,0.256869389,0,false,6
+fullStdStencil,8,1,5.122183888,2.912941316,false,0
+fullStdStencilbuildStencil,9,100,2.912941316,0,false,8
+fullZoneDist,10,1,4.10282385,1.32090253,false,0
+fullZoneDistbuildStencil,11,100,1.32090253,0,false,10
+fullStencilLooper,12,1,2.530148473,0.276474054,false,0
+fullStencilLooperbuildStencil,13,100,0.276474054,0,false,12

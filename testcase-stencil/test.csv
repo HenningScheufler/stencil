@@ -1,0 +1,8 @@
+,trigger0,trigger1,trigger2,trigger3,trigger4,trigger5
+id,0,1,2,3,4,5
+description,application::main,CPCCellToCellStencilCellBased::calcCellStencil,CPCCellToCellStencilCellBased::calcPointBoundaryData,CPCCellToCellStencilUniqueList::calcCellStencil,CPCCellToCellStencilUniqueListInsert::calcCellStencil,CPCCellToCellStencilCellBasedBitSet::calcCellStencil
+calls,1,1,1,1,1,1
+totalTime,0.944193385,0.100586872,0.005255262,0.074144305,0.047417816,0.18794961
+childTime,0.410098603,0.005255262,0,0,0,0
+active,true,false,false,false,false,false
+parentId,,0,1,0,0,0

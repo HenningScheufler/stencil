@@ -1,0 +1,62 @@
+profiling
+{
+trigger0
+{
+id : 0,
+description : application::main,
+calls : 1,
+totalTime : 0.944193385,
+childTime : 0.410098603,
+active : true
+},
+trigger1
+{
+id : 1,
+parentId : 0,
+description : CPCCellToCellStencilCellBased::calcCellStencil,
+calls : 1,
+totalTime : 0.100586872,
+childTime : 0.005255262,
+active : false
+},
+trigger2
+{
+id : 2,
+parentId : 1,
+description : CPCCellToCellStencilCellBased::calcPointBoundaryData,
+calls : 1,
+totalTime : 0.005255262,
+childTime : 0,
+active : false
+},
+trigger3
+{
+id : 3,
+parentId : 0,
+description : CPCCellToCellStencilUniqueList::calcCellStencil,
+calls : 1,
+totalTime : 0.074144305,
+childTime : 0,
+active : false
+},
+trigger4
+{
+id : 4,
+parentId : 0,
+description : CPCCellToCellStencilUniqueListInsert::calcCellStencil,
+calls : 1,
+totalTime : 0.047417816,
+childTime : 0,
+active : false
+},
+trigger5
+{
+id : 5,
+parentId : 0,
+description : CPCCellToCellStencilCellBasedBitSet::calcCellStencil,
+calls : 1,
+totalTime : 0.18794961,
+childTime : 0,
+active : false
+}
+},

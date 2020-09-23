@@ -33,11 +33,25 @@ template<class Type>
 Foam::stencilLoop<Type>::stencilLoop
 (
     const labelList& neiCells,
-    const GeometricField<Type, Foam::fvPatchField, Foam::volMesh>& fld
+    const Field<Type>& fld
 )
 :
-    labelList(neiCells),
+    neiIdx_(neiCells),
+    size_(neiCells.size()),
     fld_(fld)
+{
+
+}
+
+template<class Type>
+Foam::stencilLoop<Type>::stencilLoop
+(
+    const stencilLoop& loop
+)
+:
+    neiIdx_(loop.neiIdx_),
+    size_(loop.size_),
+    fld_(loop.fld_)
 {
 
 }
@@ -48,7 +62,7 @@ Foam::stencilLoop<Type>::stencilLoop
 template<class Type>
 const Type& Foam::stencilLoop<Type>::operator[](const label i) const
 {
-    return fld_[i];
+    return fld_[neiIdx_[i]];
 }
 // ************************************************************************* //
 

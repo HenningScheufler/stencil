@@ -41,6 +41,7 @@ SourceFiles
 #include "volFields.H"
 #include "GeometricField.H"
 
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
@@ -59,23 +60,22 @@ namespace Foam
 
 template<class Type>
 class stencilLoop
-:
-    public labelList
 {
     // Private data
-
-    const GeometricField<Type, Foam::fvPatchField, Foam::volMesh>& fld_;
+    const labelList& neiIdx_;
+    const label size_;
+    const Field<Type>& fld_;
 
     // Private Member Functions
 
         //- No copy construct
-        stencilLoop
-        (
-            const stencilLoop&
-        ) = delete;
+        // stencilLoop
+        // (
+        //     const stencilLoop&
+        // ) = delete;
 
-        //- No copy assignment
-        void operator=(const stencilLoop&) = delete;
+        // //- No copy assignment
+        // void operator=(const stencilLoop&) = delete;
 
 
 public:
@@ -91,11 +91,20 @@ public:
         stencilLoop
         (
             const labelList& neiCells,
-            const GeometricField<Type, Foam::fvPatchField, Foam::volMesh>& fld
+            const Field<Type>& fld
+        );
+
+        stencilLoop
+        (
+            const stencilLoop& loop
         );
 
 
-// Iteration
+        // Iteration
+        label size()
+        {
+            return size_;
+        }
 
         //- A const_iterator for iterating across \a on values
         class const_iterator
@@ -155,7 +164,7 @@ public:
 
         const labelList& indices()
         {
-            return *this;
+            return neiIdx_;
         }
 
 
