@@ -1,0 +1,216 @@
+/*---------------------------------------------------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     |
+    \\  /    A nd           | www.openfoam.com
+     \\/     M anipulation  |
+-------------------------------------------------------------------------------
+    Copyright (C) 2011-2016 OpenFOAM Foundation
+-------------------------------------------------------------------------------
+License
+    This file is part of OpenFOAM.
+
+    OpenFOAM is free software: you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    OpenFOAM is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+    for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
+
+\*---------------------------------------------------------------------------*/
+
+#include "subSetCPCStencil.H"
+#include "centredCPCCellToCellStencilObject.H"
+
+// * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
+
+
+void Foam::subSetCPCStencil::calcCellStencil
+(
+    labelListList& globalCellCells
+)
+{
+    const extendedCentredCellToCellStencil& stdCPCstencil =
+        centredCPCCellToCellStencilObject::New(mesh_);
+
+
+    // label fieldSize = stdCPCstencil.map().constructSize();
+
+    globalNumbering_ = globalIndex(mesh_.nCells()+mesh_.nBoundaryFaces());
+
+    const labelListList& stencil = stdCPCstencil.stencil();
+
+    List<Map<label>> compactList;
+    map_.reset
+    (
+        new mapDistribute
+        (
+            stdCPCstencil.map()
+        )
+    );
+
+
+
+    // ignore boundary faces for now
+    // boolList isInStencil(mesh_.nCells()+mesh_.nBoundaryFaces(),false);
+
+    // if (Pstream::myProcNo() == 0 )
+    // {
+    //     Pout << "subSetCells " << subSetCells_ << endl;
+    //     Pout << "map construct size " << map_().constructSize() << endl;
+    //     Pout << "map subMap  " << map_().subMap() << endl;
+    //     Pout << "map constructMap  " << map_().constructMap() << endl;
+    // }
+
+
+
+    boolList isInStencil(map().constructSize(), false);
+
+    // label localSize = 0; // maxIndex
+    // forAll(stencil, celli)
+    // for (const label celli:subSetCells)
+
+    for (const label celli:subSetCells_)
+    {
+        for (const label nei:stencil[celli])
+        {
+            isInStencil[nei] = true;
+        }
+    }
+
+
+
+    // labelList oldToNewSub;
+    labelList oldToNewConstruct;
+    map_.ref().compact
+    (
+        isInStencil,
+        mesh_.nCells()+mesh_.nBoundaryFaces(),      // maximum index of subMap
+        sendMapIndices_,
+        oldToNewConstruct,
+        UPstream::msgType()
+    );
+
+    Info << "map_ " << map_() << endl;
+
+    // Info << "oldToNewSub " << oldToNewSub << endl;
+    // Info << "oldToNewConstruct " << oldToNewConstruct << endl;
+
+    // Info << "isInStencil " << isInStencil << endl;
+    isInStencil = true; // reuse size is smaller
+    if (!includeBoundaryCells_)
+    {
+        for
+        (
+            label i=mesh_.nCells();
+            i < (mesh_.nCells()+mesh_.nBoundaryFaces());
+            ++i
+        )
+        {
+            isInStencil[i] = false;
+        }
+        // Info << "isInStencil " << isInStencil << endl;
+        stdCPCstencil.map().distribute(isInStencil);
+    }
+    // Info << "isInStencil " << isInStencil << endl;
+
+
+    DynamicList<label> neiCells(100);
+    globalCellCells.setSize(subSetCells_.size());
+    label count= 0;
+    for (const label celli:subSetCells_)
+    {
+        neiCells.clear();
+        for (const label nei:stencil[celli])
+        {
+            label newIdx = oldToNewConstruct[nei];
+            if (newIdx != -1 && isInStencil[nei])
+            {
+                neiCells.append(newIdx);
+            }
+        }
+        globalCellCells[count] = neiCells;
+        ++count;
+    }
+
+    // for (auto& stencilCells:globalCellCells)
+    // {
+    //     neiCells.clear();
+    //     forAll(stencilCells, i)
+    //     {
+    //         label newIdx = oldToNewConstruct[stencilCells[i]];
+    //         if (newIdx != -1 && isInStencil[stencilCells[i]])
+    //         {
+    //             neiCells.append(newIdx);
+    //         }
+    //     }
+    //     stencilCells = neiCells;
+    // }
+
+    Info << "globalCellCells " << globalCellCells << endl;
+
+
+    Pout << "map construct size " << map_().constructSize() << endl;
+    // if (Pstream::myProcNo() == 1 )
+    // {
+    //     Pout << "map construct size " << map_().constructSize() << endl;
+    //     Pout << "map subMap  " << map_().subMap() << endl;
+    //     Pout << "map constructMap  " << map_().constructMap() << endl;
+    // }
+
+
+
+
+
+    // Pout << "map construct size " << map_().constructSize() << endl;
+    // Info << "map construct size " << map_().subMap() << endl;
+    // Info << "map construct size " << map_().subMap() << endl;
+    // Info << "map construct size " << map_().constructMap() << endl;
+    // Info << "globalNumbering_ " << globalNumbering_ << endl;
+
+    // List<label> test= identity(map_().constructSize());
+
+    // Info << "test " << test << endl;
+    // map_().distribute(test);
+
+    // Info << "test " << test << endl;
+
+}
+
+// * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
+
+Foam::subSetCPCStencil::subSetCPCStencil
+(
+    const fvMesh& mesh,
+    const labelList& subSetCells,
+    bool includeBoundaryCells
+)
+:
+    mesh_(mesh),
+    globalNumbering_(),
+    map_(nullptr),
+    subSetCells_(subSetCells),
+    sendMapIndices_(),
+    includeBoundaryCells_(includeBoundaryCells)
+{
+
+
+    // Calculate per cell the (point) connected cells (in global numbering)
+    // labelListList globalCellCells;
+    labelListList& stencil = *this;
+    calcCellStencil(stencil); // map sendMapIndices_ is set here
+
+
+
+
+
+}
+
+
+// ************************************************************************* //

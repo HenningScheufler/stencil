@@ -10,4 +10,8 @@ regionCelltoCellStencil/regionCelltoCellStencil.C
 regionCelltoCellStencil/extendedCelltoCellStencilLooper.C
 regionCelltoCellStencil/stencilLooper.C
 
+
+subSetStencil/subSetCPCStencil.C
+subSetStencil/maskedCPCStencil.C
+
 LIB = $(FOAM_USER_LIBBIN)/libstencil

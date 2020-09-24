@@ -47,6 +47,8 @@ Author
 #include "extendedCelltoCellStencilLooper.H"
 #include "extendedCentredCellToCellStencil.H"
 #include "centredCPCCellToCellStencilObject.H"
+#include "subSetCPCStencil.H"
+#include "maskedCPCStencil.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -169,14 +171,6 @@ int main(int argc, char *argv[])
         stencilValues
     );
 
-    // Info << " stencilValues " << stencilValues << endl;
-
-    // labelList stencilASd = stencilLoop[0];
-    // Field<scalar> testFld(flatFld);
-    // labelList test = identity(mesh.nCells())
-
-    // stencilLoop<scalar> loop(test,cellNumbers);
-    // stencilLoop<scalar> looptest(test,testFld);
 
     forAll(stencilLooper,celli)
     {
@@ -193,6 +187,19 @@ int main(int argc, char *argv[])
             Info<< "const loop " << a << endl;
         }
     }
+
+    Info<< "stencilLooper stencil " << stencilLooper.stencil() << endl;
+
+    bitSet selCells(selectedCells);
+    labelList neededCells = selCells.toc();
+    bitSet mask(mesh.nCells()+mesh.nBoundaryFaces(),true);
+    // mask.set(labelRange (0, mesh.nCells()));
+
+    maskedCPCStencil maskedStencil(mesh,mask,false);
+
+    Pout << " neededCells " << neededCells << endl;
+    subSetCPCStencil subsetStencil(mesh,neededCells,false);
+
 
 
 
