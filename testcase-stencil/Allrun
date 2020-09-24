@@ -9,7 +9,7 @@ runApplication blockMesh
 restore0Dir
 
 runApplication decomposePar
-runParallel test-stencilOptimize
-runParallel test-stencilFraction
-#runParallel test-stencilMap
+runParallel test-buildStencil
+runParallel test-stencilAddressing
+
 

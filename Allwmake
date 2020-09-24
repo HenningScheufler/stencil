@@ -2,7 +2,5 @@
 
 wmake libso cellToCell
 
-wmake test-stencilFraction
-wmake test-stencilOptimize
-wmake test-stencilMap
-wmake test-regionStencil
+wmake test-buildStencil
+wmake test-stencilAddressing
