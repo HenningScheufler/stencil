@@ -49,6 +49,11 @@ Author
 #include "profiling.H"
 #include "extendedCelltoCellStencilLooper.H"
 
+#include "subSetCPCStencil.H"
+#include "maskedCPCStencil.H"
+
+#include "maskedCPCStencilCompact.H"
+
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -67,8 +72,6 @@ void loopStdStencil
     profilingTrigger loopStencil(profDesc);
     scalar count = 0;
 
-    for(label i = 0;i<n;i++)
-    {
         profilingTrigger getStencilValues(profDesc + "buildStencil");
         List<List<scalar>> stencilCellNums(mesh.nCells());
 
@@ -80,6 +83,8 @@ void loopStdStencil
         getStencilValues.stop();
 
 
+    for(label i = 0;i<n;i++)
+    {
         count = 0;
         forAll(selected,celli)
         {
@@ -111,8 +116,7 @@ void loopZoneDist
     profilingTrigger loopStencil(profDesc);
     scalar count = 0;
 
-    for(label i = 0;i<n;i++)
-    {
+
         profilingTrigger getStencilValues(profDesc + "buildStencil");
         exchangeFields_.setUpCommforZone(selected,false);
 
@@ -125,6 +129,8 @@ void loopZoneDist
 
         getStencilValues.stop();
 
+    for(label i = 0;i<n;i++)
+    {
         count = 0;
         forAll(selected,celli)
         {
@@ -155,8 +161,7 @@ void loopStencilLooper
     profilingTrigger loopStencil(profDesc);
     scalar count = 0;
 
-    for(label i = 0;i<n;i++)
-    {
+
         profilingTrigger getStencilValues(profDesc + "buildStencil");
         extendedCelltoCellStencilLooper<scalar> stencilLooper
         (
@@ -166,7 +171,8 @@ void loopStencilLooper
         );
         getStencilValues.stop();
 
-
+    for(label i = 0;i<n;i++)
+    {
         count = 0;
         forAll(selected,celli)
         {
@@ -177,12 +183,294 @@ void loopStencilLooper
                 {
                     count += val;
                 }
+
             }
         }
 
         reduce(count,sumOp<scalar>());
     }
     Info << "stencil loop count is " << count << endl;
+}
+
+void subSetStencil
+(
+    const boolList& selected,
+    const volScalarField& cellNum,
+    const extendedCentredCellToCellStencil& addressing,
+    const label n,
+    word profDesc
+)
+{
+    // stops if it gets out of scope;
+    const fvMesh& mesh = cellNum.mesh();
+    bitSet cells(selected);
+    // cells.set(selected);
+    labelList neededCells  = cells.toc();
+    profilingTrigger loopStencil(profDesc);
+    scalar count = 0;
+
+
+    profilingTrigger getStencilValues(profDesc + "buildStencil");
+    subSetCPCStencil subsetStencil(cellNum.mesh(),neededCells,true);
+        // extendedCelltoCellStencilLooper<scalar> stencilLooper
+        // (
+        //     addressing.map(),
+        //     addressing.stencil(),
+        //     cellNum
+        // );
+    getStencilValues.stop();
+
+    for(label i = 0;i<n;i++)
+    {
+
+        const labelList& cellAddress = subsetStencil.subSetCells();
+        const labelList& sendIndices = subsetStencil.sendIndices();
+        Field<scalar> cellNumField(mesh.nCells()+mesh.nBoundaryFaces(),0);
+
+        label nCells = cellNum.mesh().nCells();
+
+        // Info << " sendIndices size " << sendIndices.size() << " constructSize.size() " << subsetStencil.map().constructSize() << endl;
+        // Info << " cellNumField size " << cellNumField.size() <<  endl;
+
+        // Info << " sendIndices  " << sendIndices << endl;
+
+        forAll(sendIndices,i) //const label celli:maskedStencil.celliAddressing())
+        {
+            label idx = sendIndices[i];
+            if (idx == -1)
+            {
+                continue;
+            }
+
+            if (i < nCells)
+            {
+                cellNumField[idx] = cellNum[i];
+            }
+            else
+            {
+                const label faceI = i + mesh.nInternalFaces() - mesh.nCells();
+
+                const polyBoundaryMesh& pbm = mesh.boundaryMesh();
+
+                // Boundary face. Find out which face of which patch
+                const label patchI = pbm.whichPatch(faceI);
+
+                if (patchI < 0 || patchI >= pbm.size())
+                {
+                        FatalErrorInFunction
+                        << "Cannot find patch for face " << faceI
+                        << abort(FatalError);
+                }
+                const polyPatch& pp = pbm[patchI];
+                // Info << "pp.name " << pp.name() << endl;
+                if (isA<emptyPolyPatch>(pp))
+                {
+                    cellNumField[idx] = 0;
+                }
+                else
+                {
+                    if (cellNum.boundaryField()[patchI].size())
+                    {
+                        const label patchFaceI = pp.whichFace(faceI);
+                        cellNumField[idx] = cellNum.boundaryField()[patchI][patchFaceI];
+                        // label asd = cellNum.boundaryField()[patchI][patchFaceI];
+                    }
+                }
+
+
+            }
+
+            // stencilLoop<scalar> loop = stencilLooper[celli];
+        }
+
+        subsetStencil.map().distribute(cellNumField);
+
+
+        count = 0;
+        for(const auto& neiCelli:subsetStencil)
+        {
+            for (const label idx:neiCelli)
+            {
+                count += cellNumField[idx];
+            }
+        }
+        // Info << "not counting " << endl;
+
+        reduce(count,sumOp<scalar>());
+    }
+    Info << "subsetStencil loop count is " << count << endl;
+}
+
+
+void maskMaskedStencil
+(
+    const boolList& selected,
+    const volScalarField& cellNum,
+    const extendedCentredCellToCellStencil& addressing,
+    const label n,
+    word profDesc
+)
+{
+    // stops if it gets out of scope;
+    const fvMesh& mesh = cellNum.mesh();
+    // bitSet cells2(selected.size(),true);
+    bitSet cells(cellNum.mesh().nCells()+cellNum.mesh().nBoundaryFaces(),false);
+    // Info << "cellNum" << cellNum << endl;
+    forAll(selected,celli)
+    {
+        if (selected[celli])
+        {
+            cells.set(celli);
+        }
+    }
+
+
+    // labelList neededCells  = cells2.toc();
+    profilingTrigger loopStencil(profDesc);
+    scalar count = 0;
+
+    for(label i = 0;i<n;i++)
+    {
+
+        profilingTrigger getStencilValues(profDesc + "buildStencil");
+        maskedCPCStencilCompact maskedStencil(cellNum.mesh(),cells,true);
+
+        // const labelList& cellAddress = maskedStencil.subSetCells();
+        const labelList& sendIndices = maskedStencil.sendIndices();
+        Field<scalar> cellNumField(sendIndices.size(),0);
+
+        label nCells = cellNum.mesh().nCells();
+
+        forAll(sendIndices,i) //const label celli:maskedStencil.celliAddressing())
+        {
+            label idx = sendIndices[i];
+            if (idx == -1)
+            {
+                continue;
+            }
+
+            if (i < nCells)
+            {
+                cellNumField[idx] = cellNum[i];
+            }
+            else
+            {
+                const label faceI = i + mesh.nInternalFaces() - mesh.nCells();
+
+                const polyBoundaryMesh& pbm = mesh.boundaryMesh();
+
+                // Boundary face. Find out which face of which patch
+                const label patchI = pbm.whichPatch(faceI);
+
+                if (patchI < 0 || patchI >= pbm.size())
+                {
+                        FatalErrorInFunction
+                        << "Cannot find patch for face " << faceI
+                        << abort(FatalError);
+                }
+                const polyPatch& pp = pbm[patchI];
+                // Info << "pp.name " << pp.name() << endl;
+                if (isA<emptyPolyPatch>(pp))
+                {
+                    cellNumField[idx] = 0;
+                }
+                else
+                {
+                    if (cellNum.boundaryField()[patchI].size())
+                    {
+                        const label patchFaceI = pp.whichFace(faceI);
+                        cellNumField[idx] = cellNum.boundaryField()[patchI][patchFaceI];
+                        // label asd = cellNum.boundaryField()[patchI][patchFaceI];
+                    }
+                }
+            }
+
+
+            // stencilLoop<scalar> loop = stencilLooper[celli];
+        }
+
+        maskedStencil.map().distribute(cellNumField);
+
+
+
+        count = 0;
+        for(const auto& neiCelli:maskedStencil)
+        {
+            for (const label idx:neiCelli)
+            {
+                count += cellNumField[idx];
+            }
+        }
+
+        getStencilValues.stop();
+
+
+
+        reduce(count,sumOp<scalar>());
+    }
+    Info << "maskMaskedStencil loop count is " << count << endl;
+}
+
+void maskedStdStencil
+(
+    const boolList& selected,
+    const volScalarField& cellNum,
+    const extendedCentredCellToCellStencil& addressing,
+    const label n,
+    word profDesc
+)
+{
+    const fvMesh& mesh = cellNum.mesh();
+
+    bitSet cells(cellNum.mesh().nCells()+cellNum.mesh().nBoundaryFaces(),false);
+    // Info << "cellNum" << cellNum << endl;
+    forAll(selected,celli)
+    {
+        if (selected[celli])
+        {
+            cells.set(celli);
+        }
+    }
+
+    List<bool> maskedCells = cells.values();
+    // stops if it gets out of scope;
+    profilingTrigger loopStencil(profDesc);
+    scalar count = 0;
+
+    profilingTrigger getStencilValues(profDesc + "buildStencil");
+    List<List<scalar>> stencilCellNums(mesh.nCells());
+
+    addressing.collectData
+    (
+        cellNum,
+        stencilCellNums
+    );
+
+    addressing.map().distribute(maskedCells);
+    getStencilValues.stop();
+
+
+    for(label i = 0;i<n;i++)
+    {
+        count = 0;
+        forAll(selected,celli)
+        {
+            if(selected[celli])
+            {
+                forAll(addressing.stencil()[celli],i)
+                {
+                    const label idx = addressing.stencil()[celli][i];
+                    if (maskedCells[idx])
+                    {
+                        count += stencilCellNums[celli][i];
+                    }
+                }
+            }
+        }
+
+        reduce(count,sumOp<scalar>());
+    }
+    Info << "masked std stencil count is " << count << endl;
 }
 
 
@@ -229,7 +517,6 @@ int main(int argc, char *argv[])
 
     boolList selected = maskCells.values();
 
-
     // building stencil
     profilingTrigger profBuildStencil("profBuildStencil");
 
@@ -250,19 +537,47 @@ int main(int argc, char *argv[])
     // Collect stencil cell centres
     Info<< "Collecting data 100 times" << endl;
 
-    loopStdStencil(selected,cellNumbers,addressing,100,word("partialStdStencil"));
+    loopStdStencil(selected,cellNumbers,addressing,1,word("partialStdStencil"));
 
-    loopZoneDist(selected,cellNumbers,exchangeFields_,100,word("partialZoneDist"));
+    loopZoneDist(selected,cellNumbers,exchangeFields_,1,word("partialZoneDist"));
 
-    loopStencilLooper(selected,cellNumbers,addressing,100,word("partialStencilLooper"));
+    loopStencilLooper(selected,cellNumbers,addressing,1,word("partialStencilLooper"));
+
+    subSetStencil(selected,cellNumbers,addressing,1,word("partialsubSetStencil"));
+
+    // masked loop
+
+    selectCells.setSize(mesh.nCells()*0.3);
+    forAll(selectCells, i)
+    {
+        selectCells[i] = rndGen.position<label>(0,mesh.nCells()-1);
+    }
+
+    maskCells = false;
+
+    maskCells.set(selectCells);
+
+    selected = maskCells.values();
+    Info << "masked"  << endl;
+
+    maskedStdStencil(selected,cellNumbers,addressing,1,word("maskedStdStencil"));
+
+    maskMaskedStencil(selected,cellNumbers,addressing,1,word("maskedmaskedStencil"));
 
     selected = true;
+    Info << "full"  << endl;
 
-    loopStdStencil(selected,cellNumbers,addressing,100,word("fullStdStencil"));
+    loopStdStencil(selected,cellNumbers,addressing,1,word("fullStdStencil"));
 
-    loopZoneDist(selected,cellNumbers,exchangeFields_,100,word("fullZoneDist"));
+    loopZoneDist(selected,cellNumbers,exchangeFields_,1,word("fullZoneDist"));
 
-    loopStencilLooper(selected,cellNumbers,addressing,100,word("fullStencilLooper"));
+    loopStencilLooper(selected,cellNumbers,addressing,1,word("fullStencilLooper"));
+
+    subSetStencil(selected,cellNumbers,addressing,1,word("fullsubSetStencil"));
+
+    //maskMaskedStencil(selected,cellNumbers,addressing,1,word("fullmaskedStencil"));
+
+
 
     OFstream profData("profiling_stencilAddressing.dat");
     Foam::profiling::print(profData);

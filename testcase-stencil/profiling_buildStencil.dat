@@ -1,0 +1,67 @@
+profiling
+{
+    trigger0
+    {
+        id              0;
+        description     "application::main";
+        calls           1;
+        totalTime       1.120051165;
+        childTime       0.382012416;
+        active          true;
+    }
+
+    trigger1
+    {
+        id              1;
+        parentId        0;
+        description     "CPCCellToCellStencilCellBased::calcCellStencil";
+        calls           1;
+        totalTime       0.099941745;
+        childTime       0.007062262;
+        active          false;
+    }
+
+    trigger2
+    {
+        id              2;
+        parentId        1;
+        description     "CPCCellToCellStencilCellBased::calcPointBoundaryData";
+        calls           1;
+        totalTime       0.007062262;
+        childTime       0;
+        active          false;
+    }
+
+    trigger3
+    {
+        id              3;
+        parentId        0;
+        description     "CPCCellToCellStencilUniqueList::calcCellStencil";
+        calls           1;
+        totalTime       0.071977438;
+        childTime       0;
+        active          false;
+    }
+
+    trigger4
+    {
+        id              4;
+        parentId        0;
+        description     "CPCCellToCellStencilUniqueListInsert::calcCellStencil";
+        calls           1;
+        totalTime       0.050175137;
+        childTime       0;
+        active          false;
+    }
+
+    trigger5
+    {
+        id              5;
+        parentId        0;
+        description     "CPCCellToCellStencilCellBasedBitSet::calcCellStencil";
+        calls           1;
+        totalTime       0.159918096;
+        childTime       0;
+        active          false;
+    }
+}

@@ -1,0 +1,246 @@
+profiling
+{
+    trigger0
+    {
+        id              0;
+        description     "application::main";
+        calls           1;
+        totalTime       0.954993872;
+        childTime       0.73306561;
+        active          true;
+    }
+
+    trigger1
+    {
+        id              1;
+        parentId        0;
+        description     "profBuildStencil";
+        calls           1;
+        totalTime       0.686367973;
+        childTime       0;
+        active          false;
+    }
+
+    trigger2
+    {
+        id              2;
+        parentId        0;
+        description     "partialStdStencil";
+        calls           1;
+        totalTime       0.006569493;
+        childTime       0.005023787;
+        active          false;
+    }
+
+    trigger3
+    {
+        id              3;
+        parentId        2;
+        description     "partialStdStencilbuildStencil";
+        calls           1;
+        totalTime       0.005023787;
+        childTime       0;
+        active          false;
+    }
+
+    trigger4
+    {
+        id              4;
+        parentId        0;
+        description     "partialZoneDist";
+        calls           1;
+        totalTime       0.001545486;
+        childTime       0.001140054;
+        active          false;
+    }
+
+    trigger5
+    {
+        id              5;
+        parentId        4;
+        description     "partialZoneDistbuildStencil";
+        calls           1;
+        totalTime       0.001140054;
+        childTime       0;
+        active          false;
+    }
+
+    trigger6
+    {
+        id              6;
+        parentId        0;
+        description     "partialStencilLooper";
+        calls           1;
+        totalTime       0.000677051;
+        childTime       0.00046167;
+        active          false;
+    }
+
+    trigger7
+    {
+        id              7;
+        parentId        6;
+        description     "partialStencilLooperbuildStencil";
+        calls           1;
+        totalTime       0.00046167;
+        childTime       0;
+        active          false;
+    }
+
+    trigger8
+    {
+        id              8;
+        parentId        0;
+        description     "partialsubSetStencil";
+        calls           1;
+        totalTime       0.0011645;
+        childTime       0.000862505;
+        active          false;
+    }
+
+    trigger9
+    {
+        id              9;
+        parentId        8;
+        description     "partialsubSetStencilbuildStencil";
+        calls           1;
+        totalTime       0.000862505;
+        childTime       0;
+        active          false;
+    }
+
+    trigger10
+    {
+        id              10;
+        parentId        0;
+        description     "maskedStdStencil";
+        calls           1;
+        totalTime       0.008177468;
+        childTime       0.004480601;
+        active          false;
+    }
+
+    trigger11
+    {
+        id              11;
+        parentId        10;
+        description     "maskedStdStencilbuildStencil";
+        calls           1;
+        totalTime       0.004480601;
+        childTime       0;
+        active          false;
+    }
+
+    trigger12
+    {
+        id              12;
+        parentId        0;
+        description     "maskedmaskedStencil";
+        calls           1;
+        totalTime       0.003582971;
+        childTime       0.003363762;
+        active          false;
+    }
+
+    trigger13
+    {
+        id              13;
+        parentId        12;
+        description     "maskedmaskedStencilbuildStencil";
+        calls           1;
+        totalTime       0.003363762;
+        childTime       0;
+        active          false;
+    }
+
+    trigger14
+    {
+        id              14;
+        parentId        0;
+        description     "fullStdStencil";
+        calls           1;
+        totalTime       0.00639482;
+        childTime       0.004292422;
+        active          false;
+    }
+
+    trigger15
+    {
+        id              15;
+        parentId        14;
+        description     "fullStdStencilbuildStencil";
+        calls           1;
+        totalTime       0.004292422;
+        childTime       0;
+        active          false;
+    }
+
+    trigger16
+    {
+        id              16;
+        parentId        0;
+        description     "fullZoneDist";
+        calls           1;
+        totalTime       0.006739467;
+        childTime       0.00300042;
+        active          false;
+    }
+
+    trigger17
+    {
+        id              17;
+        parentId        16;
+        description     "fullZoneDistbuildStencil";
+        calls           1;
+        totalTime       0.00300042;
+        childTime       0;
+        active          false;
+    }
+
+    trigger18
+    {
+        id              18;
+        parentId        0;
+        description     "fullStencilLooper";
+        calls           1;
+        totalTime       0.003278599;
+        childTime       0.000354876;
+        active          false;
+    }
+
+    trigger19
+    {
+        id              19;
+        parentId        18;
+        description     "fullStencilLooperbuildStencil";
+        calls           1;
+        totalTime       0.000354876;
+        childTime       0;
+        active          false;
+    }
+
+    trigger20
+    {
+        id              20;
+        parentId        0;
+        description     "fullsubSetStencil";
+        calls           1;
+        totalTime       0.008567782;
+        childTime       0.005903313;
+        active          false;
+    }
+
+    trigger21
+    {
+        id              21;
+        parentId        20;
+        description     "fullsubSetStencilbuildStencil";
+        calls           1;
+        totalTime       0.005903313;
+        childTime       0;
+        active          false;
+    }
+}
+  }
+}
+

@@ -32,6 +32,16 @@
         "test-regionStencil.C": "cpp",
         "CPCCellToCellStencilCellBased copy.C": "cpp",
         "CPCCellToCellStencilCellBasedBitSet.C": "cpp",
-        "chrono": "cpp"
+        "chrono": "cpp",
+        "extendedCelltoCellStencilLooper.C": "cpp",
+        "extendedCelltoCellStencilLooper copy.C": "cpp",
+        "stencilLooper.C": "cpp",
+        "subSetCPCStencil.C": "cpp",
+        "subSetCPCStencil copy.C": "cpp",
+        "maskedCPCStencil.C": "cpp",
+        "test-buildStencil.C": "cpp",
+        "test-stencilAddressing.C": "cpp",
+        "maskedCPCStencil copy.C": "cpp",
+        "maskedCPCStencilCompact.C": "cpp"
     }
 }

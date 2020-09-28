@@ -75,6 +75,7 @@ void Foam::subSetCPCStencil::calcCellStencil
     // label localSize = 0; // maxIndex
     // forAll(stencil, celli)
     // for (const label celli:subSetCells)
+    // Info << "stencil " << stencil << endl;
 
     for (const label celli:subSetCells_)
     {
@@ -84,26 +85,8 @@ void Foam::subSetCPCStencil::calcCellStencil
         }
     }
 
-
-
-    // labelList oldToNewSub;
-    labelList oldToNewConstruct;
-    map_.ref().compact
-    (
-        isInStencil,
-        mesh_.nCells()+mesh_.nBoundaryFaces(),      // maximum index of subMap
-        sendMapIndices_,
-        oldToNewConstruct,
-        UPstream::msgType()
-    );
-
-    Info << "map_ " << map_() << endl;
-
-    // Info << "oldToNewSub " << oldToNewSub << endl;
-    // Info << "oldToNewConstruct " << oldToNewConstruct << endl;
-
     // Info << "isInStencil " << isInStencil << endl;
-    isInStencil = true; // reuse size is smaller
+
     if (!includeBoundaryCells_)
     {
         for
@@ -118,6 +101,26 @@ void Foam::subSetCPCStencil::calcCellStencil
         // Info << "isInStencil " << isInStencil << endl;
         stdCPCstencil.map().distribute(isInStencil);
     }
+
+    // labelList oldToNewSub;
+    labelList oldToNewConstruct;
+    map_.ref().compact
+    (
+        isInStencil,
+        mesh_.nCells()+mesh_.nBoundaryFaces(),      // maximum index of subMap
+        sendMapIndices_,
+        oldToNewConstruct,
+        UPstream::msgType()
+    );
+
+    // Info << "map_ " << map_() << endl;
+
+    // Info << "oldToNewSub " << oldToNewSub << endl;
+    // Info << "oldToNewConstruct " << oldToNewConstruct << endl;
+
+    // Info << "sendMapIndices_ " << sendMapIndices_ << endl;
+    // isInStencil = true; // reuse size is smaller
+
     // Info << "isInStencil " << isInStencil << endl;
 
 
@@ -153,20 +156,7 @@ void Foam::subSetCPCStencil::calcCellStencil
     //     stencilCells = neiCells;
     // }
 
-    Info << "globalCellCells " << globalCellCells << endl;
-
-
-    Pout << "map construct size " << map_().constructSize() << endl;
-    // if (Pstream::myProcNo() == 1 )
-    // {
-    //     Pout << "map construct size " << map_().constructSize() << endl;
-    //     Pout << "map subMap  " << map_().subMap() << endl;
-    //     Pout << "map constructMap  " << map_().constructMap() << endl;
-    // }
-
-
-
-
+    // Info << "globalCellCells " << globalCellCells << endl;
 
     // Pout << "map construct size " << map_().constructSize() << endl;
     // Info << "map construct size " << map_().subMap() << endl;
@@ -203,6 +193,13 @@ Foam::subSetCPCStencil::subSetCPCStencil
 
     // Calculate per cell the (point) connected cells (in global numbering)
     // labelListList globalCellCells;
+    if (max(subSetCells) >= mesh.nCells())
+    {
+        FatalError  << "maximum value of subSetStencil exceeds " << nl
+                    << "mesh.nCells()" << nl
+                    << abort(FatalError);
+    }
+
     labelListList& stencil = *this;
     calcCellStencil(stencil); // map sendMapIndices_ is set here
 

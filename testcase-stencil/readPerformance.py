@@ -56,10 +56,10 @@ def writeCsv(fileName):
     df = pd.DataFrame.from_dict(prof_dict)
     return df
 
-df = writeCsv("profiling_stencilFraction.dat").T
+df = writeCsv("profiling_stencilAddressing.dat").T
 df = df.set_index("description")
-df.to_csv("profiling_stencilFraction_200.csv")
-df = writeCsv("profiling_stencilOptimize.dat").T
-df = df.set_index("description")
-df.to_csv("profiling_stencilOptimize_200.csv")
+df.to_csv("profiling_stencilAddressing_200.csv")
+# df = writeCsv("profiling_buildStencil.dat").T
+# df = df.set_index("description")
+# df.to_csv("profiling_buildStencil_200.csv")
 

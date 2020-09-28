@@ -1,0 +1,7 @@
+description,id,calls,totalTime,childTime,active,parentId
+application::main,0,1,1.069225226,0.393888321,true,
+CPCCellToCellStencilCellBased::calcCellStencil,1,1,0.112072062,0.004992934,false,0
+CPCCellToCellStencilCellBased::calcPointBoundaryData,2,1,0.004992934,0,false,1
+CPCCellToCellStencilUniqueList::calcCellStencil,3,1,0.069327812,0,false,0
+CPCCellToCellStencilUniqueListInsert::calcCellStencil,4,1,0.047946544,0,false,0
+CPCCellToCellStencilCellBasedBitSet::calcCellStencil,5,1,0.164541903,0,false,0

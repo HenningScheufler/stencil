@@ -3,7 +3,7 @@ import os
 
 prof_stencilLoop = pd.DataFrame()
 for f in os.listdir():
-    if "profiling_stencilFraction" in f:
+    if "profiling_stencilAddressing" in f:
         name = os.path.splitext(f)[0]
         print(name)
         cellNo = name.split("_")[2]

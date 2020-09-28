@@ -56,7 +56,8 @@ class maskedCPCStencil
 :
     public labelListList
 {
-    // Private data
+    // Protected data
+    protected:
 
         const fvMesh& mesh_;
 
@@ -71,7 +72,7 @@ class maskedCPCStencil
 
         const bool includeBoundaryCells_;
 
-
+    private:
 
         //- Calculates per cell the neighbour data
         //  (= cell or boundary in global numbering).

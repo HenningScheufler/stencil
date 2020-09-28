@@ -24,17 +24,17 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::subSetCPCStencil
+    Foam::maskedCPCStencilCompact
 
 Description
 
 SourceFiles
-    subSetCPCStencil.C
+    maskedCPCStencilCompact.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef subSetCPCStencil_H
-#define subSetCPCStencil_H
+#ifndef maskedCPCStencilCompact_H
+#define maskedCPCStencilCompact_H
 
 #include "boolList.H"
 #include "HashSet.H"
@@ -49,29 +49,29 @@ namespace Foam
 {
 
 /*---------------------------------------------------------------------------*\
-                    Class subSetCPCStencil Declaration
+                    Class maskedCPCStencilCompact Declaration
 \*---------------------------------------------------------------------------*/
 
-class subSetCPCStencil
+class maskedCPCStencilCompact
 :
     public labelListList
 {
-    // Private data
+    // Protected data
+    protected:
 
         const fvMesh& mesh_;
 
-        //- Global numbering for cells and boundary faces
-        globalIndex globalNumbering_;
-
         autoPtr<mapDistribute> map_;
 
-        const labelList& subSetCells_;
+        const bitSet& mask_;
+
+        labelList celliAddressing_;
 
         labelList sendMapIndices_;
 
         const bool includeBoundaryCells_;
 
-
+    private:
 
         //- Calculates per cell the neighbour data
         //  (= cell or boundary in global numbering).
@@ -84,36 +84,34 @@ public:
     // Constructors
 
         //- Construct from all cells and boundary faces
-        explicit subSetCPCStencil
+        explicit maskedCPCStencilCompact
         (
             const fvMesh& mesh,
-            const labelList& subSetCells,
+            const bitSet& mask,
             bool includeBoundaryCells
         );
-
-        const globalIndex& globalNumbering()
-        {
-            return globalNumbering_;
-        }
 
         const mapDistribute& map()
         {
             return map_();
         }
 
-        // const bitSet& mask()
-        // {
-        //     return mask_;
-        // }
+        const bitSet& mask()
+        {
+            return mask_;
+        }
+
         const labelList& sendIndices()
         {
             return sendMapIndices_;
         }
 
-        const labelList& subSetCells()
+        const labelList& celliAddressing()
         {
-            return subSetCells_;
+            return celliAddressing_;
         }
+
+        // Iterators
 
 };
 
