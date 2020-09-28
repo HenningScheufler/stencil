@@ -40,10 +40,6 @@ void Foam::subSetCPCStencil::calcCellStencil
         centredCPCCellToCellStencilObject::New(mesh_);
 
 
-    // label fieldSize = stdCPCstencil.map().constructSize();
-
-    globalNumbering_ = globalIndex(mesh_.nCells()+mesh_.nBoundaryFaces());
-
     const labelListList& stencil = stdCPCstencil.stencil();
 
     List<Map<label>> compactList;
@@ -55,27 +51,7 @@ void Foam::subSetCPCStencil::calcCellStencil
         )
     );
 
-
-
-    // ignore boundary faces for now
-    // boolList isInStencil(mesh_.nCells()+mesh_.nBoundaryFaces(),false);
-
-    // if (Pstream::myProcNo() == 0 )
-    // {
-    //     Pout << "subSetCells " << subSetCells_ << endl;
-    //     Pout << "map construct size " << map_().constructSize() << endl;
-    //     Pout << "map subMap  " << map_().subMap() << endl;
-    //     Pout << "map constructMap  " << map_().constructMap() << endl;
-    // }
-
-
-
     boolList isInStencil(map().constructSize(), false);
-
-    // label localSize = 0; // maxIndex
-    // forAll(stencil, celli)
-    // for (const label celli:subSetCells)
-    // Info << "stencil " << stencil << endl;
 
     for (const label celli:subSetCells_)
     {
@@ -85,7 +61,6 @@ void Foam::subSetCPCStencil::calcCellStencil
         }
     }
 
-    // Info << "isInStencil " << isInStencil << endl;
 
     if (!includeBoundaryCells_)
     {
@@ -98,7 +73,6 @@ void Foam::subSetCPCStencil::calcCellStencil
         {
             isInStencil[i] = false;
         }
-        // Info << "isInStencil " << isInStencil << endl;
         stdCPCstencil.map().distribute(isInStencil);
     }
 
@@ -112,17 +86,6 @@ void Foam::subSetCPCStencil::calcCellStencil
         oldToNewConstruct,
         UPstream::msgType()
     );
-
-    // Info << "map_ " << map_() << endl;
-
-    // Info << "oldToNewSub " << oldToNewSub << endl;
-    // Info << "oldToNewConstruct " << oldToNewConstruct << endl;
-
-    // Info << "sendMapIndices_ " << sendMapIndices_ << endl;
-    // isInStencil = true; // reuse size is smaller
-
-    // Info << "isInStencil " << isInStencil << endl;
-
 
     DynamicList<label> neiCells(100);
     globalCellCells.setSize(subSetCells_.size());
@@ -142,35 +105,6 @@ void Foam::subSetCPCStencil::calcCellStencil
         ++count;
     }
 
-    // for (auto& stencilCells:globalCellCells)
-    // {
-    //     neiCells.clear();
-    //     forAll(stencilCells, i)
-    //     {
-    //         label newIdx = oldToNewConstruct[stencilCells[i]];
-    //         if (newIdx != -1 && isInStencil[stencilCells[i]])
-    //         {
-    //             neiCells.append(newIdx);
-    //         }
-    //     }
-    //     stencilCells = neiCells;
-    // }
-
-    // Info << "globalCellCells " << globalCellCells << endl;
-
-    // Pout << "map construct size " << map_().constructSize() << endl;
-    // Info << "map construct size " << map_().subMap() << endl;
-    // Info << "map construct size " << map_().subMap() << endl;
-    // Info << "map construct size " << map_().constructMap() << endl;
-    // Info << "globalNumbering_ " << globalNumbering_ << endl;
-
-    // List<label> test= identity(map_().constructSize());
-
-    // Info << "test " << test << endl;
-    // map_().distribute(test);
-
-    // Info << "test " << test << endl;
-
 }
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
@@ -183,7 +117,6 @@ Foam::subSetCPCStencil::subSetCPCStencil
 )
 :
     mesh_(mesh),
-    globalNumbering_(),
     map_(nullptr),
     subSetCells_(subSetCells),
     sendMapIndices_(),

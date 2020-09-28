@@ -5,8 +5,8 @@ profiling
         id              0;
         description     "application::main";
         calls           1;
-        totalTime       0.954993872;
-        childTime       0.73306561;
+        totalTime       0.950550032;
+        childTime       0.706375325;
         active          true;
     }
 
@@ -16,7 +16,7 @@ profiling
         parentId        0;
         description     "profBuildStencil";
         calls           1;
-        totalTime       0.686367973;
+        totalTime       0.658526957;
         childTime       0;
         active          false;
     }
@@ -27,8 +27,8 @@ profiling
         parentId        0;
         description     "partialStdStencil";
         calls           1;
-        totalTime       0.006569493;
-        childTime       0.005023787;
+        totalTime       0.006625145;
+        childTime       0.004608175;
         active          false;
     }
 
@@ -38,7 +38,7 @@ profiling
         parentId        2;
         description     "partialStdStencilbuildStencil";
         calls           1;
-        totalTime       0.005023787;
+        totalTime       0.004608175;
         childTime       0;
         active          false;
     }
@@ -49,8 +49,8 @@ profiling
         parentId        0;
         description     "partialZoneDist";
         calls           1;
-        totalTime       0.001545486;
-        childTime       0.001140054;
+        totalTime       0.001041407;
+        childTime       0.000761373;
         active          false;
     }
 
@@ -60,7 +60,7 @@ profiling
         parentId        4;
         description     "partialZoneDistbuildStencil";
         calls           1;
-        totalTime       0.001140054;
+        totalTime       0.000761373;
         childTime       0;
         active          false;
     }
@@ -71,8 +71,8 @@ profiling
         parentId        0;
         description     "partialStencilLooper";
         calls           1;
-        totalTime       0.000677051;
-        childTime       0.00046167;
+        totalTime       0.000486167;
+        childTime       0.00032981;
         active          false;
     }
 
@@ -82,7 +82,7 @@ profiling
         parentId        6;
         description     "partialStencilLooperbuildStencil";
         calls           1;
-        totalTime       0.00046167;
+        totalTime       0.00032981;
         childTime       0;
         active          false;
     }
@@ -93,8 +93,8 @@ profiling
         parentId        0;
         description     "partialsubSetStencil";
         calls           1;
-        totalTime       0.0011645;
-        childTime       0.000862505;
+        totalTime       0.000743539;
+        childTime       0.00046618;
         active          false;
     }
 
@@ -104,7 +104,7 @@ profiling
         parentId        8;
         description     "partialsubSetStencilbuildStencil";
         calls           1;
-        totalTime       0.000862505;
+        totalTime       0.00046618;
         childTime       0;
         active          false;
     }
@@ -115,8 +115,8 @@ profiling
         parentId        0;
         description     "maskedStdStencil";
         calls           1;
-        totalTime       0.008177468;
-        childTime       0.004480601;
+        totalTime       0.007206824;
+        childTime       0.003739347;
         active          false;
     }
 
@@ -126,7 +126,7 @@ profiling
         parentId        10;
         description     "maskedStdStencilbuildStencil";
         calls           1;
-        totalTime       0.004480601;
+        totalTime       0.003739347;
         childTime       0;
         active          false;
     }
@@ -137,8 +137,8 @@ profiling
         parentId        0;
         description     "maskedmaskedStencil";
         calls           1;
-        totalTime       0.003582971;
-        childTime       0.003363762;
+        totalTime       0.003822876;
+        childTime       0.003523284;
         active          false;
     }
 
@@ -148,7 +148,7 @@ profiling
         parentId        12;
         description     "maskedmaskedStencilbuildStencil";
         calls           1;
-        totalTime       0.003363762;
+        totalTime       0.003523284;
         childTime       0;
         active          false;
     }
@@ -159,8 +159,8 @@ profiling
         parentId        0;
         description     "fullStdStencil";
         calls           1;
-        totalTime       0.00639482;
-        childTime       0.004292422;
+        totalTime       0.006238677;
+        childTime       0.003241677;
         active          false;
     }
 
@@ -170,7 +170,7 @@ profiling
         parentId        14;
         description     "fullStdStencilbuildStencil";
         calls           1;
-        totalTime       0.004292422;
+        totalTime       0.003241677;
         childTime       0;
         active          false;
     }
@@ -181,8 +181,8 @@ profiling
         parentId        0;
         description     "fullZoneDist";
         calls           1;
-        totalTime       0.006739467;
-        childTime       0.00300042;
+        totalTime       0.00666455;
+        childTime       0.002877121;
         active          false;
     }
 
@@ -192,7 +192,7 @@ profiling
         parentId        16;
         description     "fullZoneDistbuildStencil";
         calls           1;
-        totalTime       0.00300042;
+        totalTime       0.002877121;
         childTime       0;
         active          false;
     }
@@ -203,8 +203,8 @@ profiling
         parentId        0;
         description     "fullStencilLooper";
         calls           1;
-        totalTime       0.003278599;
-        childTime       0.000354876;
+        totalTime       0.003273728;
+        childTime       0.000321374;
         active          false;
     }
 
@@ -214,7 +214,7 @@ profiling
         parentId        18;
         description     "fullStencilLooperbuildStencil";
         calls           1;
-        totalTime       0.000354876;
+        totalTime       0.000321374;
         childTime       0;
         active          false;
     }
@@ -225,8 +225,8 @@ profiling
         parentId        0;
         description     "fullsubSetStencil";
         calls           1;
-        totalTime       0.008567782;
-        childTime       0.005903313;
+        totalTime       0.011745455;
+        childTime       0.005938704;
         active          false;
     }
 
@@ -236,11 +236,11 @@ profiling
         parentId        20;
         description     "fullsubSetStencilbuildStencil";
         calls           1;
-        totalTime       0.005903313;
+        totalTime       0.005938704;
         childTime       0;
         active          false;
     }
 }
-  }
+
 }
 

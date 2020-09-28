@@ -13,6 +13,5 @@ regionCelltoCellStencil/stencilLooper.C
 
 subSetStencil/subSetCPCStencil.C
 subSetStencil/maskedCPCStencil.C
-subSetStencil/maskedCPCStencilCompact.C
 
 LIB = $(FOAM_USER_LIBBIN)/libstencil

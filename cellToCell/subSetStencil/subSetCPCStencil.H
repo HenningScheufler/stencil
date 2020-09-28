@@ -43,6 +43,8 @@ SourceFiles
 #include "globalIndex.H"
 #include "mapDistribute.H"
 
+#include "stencilLooper.H"
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
@@ -59,9 +61,6 @@ class subSetCPCStencil
     // Private data
 
         const fvMesh& mesh_;
-
-        //- Global numbering for cells and boundary faces
-        globalIndex globalNumbering_;
 
         autoPtr<mapDistribute> map_;
 
@@ -91,12 +90,8 @@ public:
             bool includeBoundaryCells
         );
 
-        const globalIndex& globalNumbering()
-        {
-            return globalNumbering_;
-        }
 
-        const mapDistribute& map()
+        const mapDistribute& map() const
         {
             return map_();
         }
@@ -105,14 +100,37 @@ public:
         // {
         //     return mask_;
         // }
-        const labelList& sendIndices()
+        const labelList& sendIndices() const
         {
             return sendMapIndices_;
         }
 
-        const labelList& subSetCells()
+        const labelList& subSetCells() const
         {
             return subSetCells_;
+        }
+
+        // Iterators
+        template<class Type>
+        stencilLooper<Type> stencilValues
+        (
+            const GeometricField<Type, Foam::fvPatchField, Foam::volMesh>& fld
+        ) const;
+
+        template<class Type>
+        stencilLooper<Type> stencilValues
+        (
+            const Field<Type>& fld
+        ) const
+        {
+            const labelListList& stencil = *this;
+            return stencilLooper<Type>
+            (
+                mesh_,
+                this->map(),
+                stencil,
+                fld
+            );
         }
 
 };
@@ -123,6 +141,7 @@ public:
 } // End namespace Foam
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+#include "subSetCPCStencilI.C"
 
 #endif
 

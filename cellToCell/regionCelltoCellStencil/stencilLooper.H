@@ -72,13 +72,13 @@ class stencilLooper
     // Private Member Functions
 
         //- No copy construct
-        stencilLooper
-        (
-            const stencilLooper&
-        ) = delete;
+        // stencilLooper
+        // (
+        //     const stencilLooper&
+        // ) = delete;
 
-        //- No copy assignment
-        void operator=(const stencilLooper&) = delete;
+        // //- No copy assignment
+        // void operator=(const stencilLooper&) = delete;
 
 
 public:
@@ -94,8 +94,8 @@ public:
         );
 
 
-        //- Construct from uncompacted cell stencil
-        explicit stencilLooper
+        //- Construct from componets
+        stencilLooper
         (
             const polyMesh& mesh,
             const mapDistribute& map,

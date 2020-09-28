@@ -43,6 +43,8 @@ SourceFiles
 #include "globalIndex.H"
 #include "mapDistribute.H"
 
+#include "stencilLooper.H"
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
@@ -61,14 +63,13 @@ class maskedCPCStencil
 
         const fvMesh& mesh_;
 
-        //- Global numbering for cells and boundary faces
-        globalIndex globalNumbering_;
-
         autoPtr<mapDistribute> map_;
 
         const bitSet& mask_;
 
         labelList celliAddressing_;
+
+        labelList sendMapIndices_;
 
         const bool includeBoundaryCells_;
 
@@ -92,25 +93,49 @@ public:
             bool includeBoundaryCells
         );
 
-        const globalIndex& globalNumbering()
-        {
-            return globalNumbering_;
-        }
-
-        const mapDistribute& map()
+        const mapDistribute& map() const
         {
             return map_();
         }
 
-        const bitSet& mask()
+        const bitSet& mask() const
         {
             return mask_;
         }
 
-        const labelList& celliAddressing()
+        const labelList& sendIndices() const
+        {
+            return sendMapIndices_;
+        }
+
+        const labelList& celliAddressing() const
         {
             return celliAddressing_;
         }
+
+        // Iterators
+        template<class Type>
+        stencilLooper<Type> stencilValues
+        (
+            const GeometricField<Type, Foam::fvPatchField, Foam::volMesh>& fld
+        ) const;
+
+        template<class Type>
+        stencilLooper<Type> stencilValues
+        (
+            const Field<Type>& fld
+        ) const
+        {
+            const labelListList& stencil = *this;
+            return stencilLooper<Type>
+            (
+                mesh_,
+                this->map(),
+                stencil,
+                fld
+            );
+        }
+
 
 };
 
@@ -119,6 +144,7 @@ public:
 
 } // End namespace Foam
 
+#include "maskedCPCStencilI.C"
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 #endif

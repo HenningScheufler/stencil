@@ -52,7 +52,7 @@ Author
 #include "subSetCPCStencil.H"
 #include "maskedCPCStencil.H"
 
-#include "maskedCPCStencilCompact.H"
+#include "maskedCPCStencil.H"
 
 
 
@@ -222,79 +222,15 @@ void subSetStencil
 
     for(label i = 0;i<n;i++)
     {
-
-        const labelList& cellAddress = subsetStencil.subSetCells();
-        const labelList& sendIndices = subsetStencil.sendIndices();
-        Field<scalar> cellNumField(mesh.nCells()+mesh.nBoundaryFaces(),0);
-
-        label nCells = cellNum.mesh().nCells();
-
-        // Info << " sendIndices size " << sendIndices.size() << " constructSize.size() " << subsetStencil.map().constructSize() << endl;
-        // Info << " cellNumField size " << cellNumField.size() <<  endl;
-
-        // Info << " sendIndices  " << sendIndices << endl;
-
-        forAll(sendIndices,i) //const label celli:maskedStencil.celliAddressing())
-        {
-            label idx = sendIndices[i];
-            if (idx == -1)
-            {
-                continue;
-            }
-
-            if (i < nCells)
-            {
-                cellNumField[idx] = cellNum[i];
-            }
-            else
-            {
-                const label faceI = i + mesh.nInternalFaces() - mesh.nCells();
-
-                const polyBoundaryMesh& pbm = mesh.boundaryMesh();
-
-                // Boundary face. Find out which face of which patch
-                const label patchI = pbm.whichPatch(faceI);
-
-                if (patchI < 0 || patchI >= pbm.size())
-                {
-                        FatalErrorInFunction
-                        << "Cannot find patch for face " << faceI
-                        << abort(FatalError);
-                }
-                const polyPatch& pp = pbm[patchI];
-                // Info << "pp.name " << pp.name() << endl;
-                if (isA<emptyPolyPatch>(pp))
-                {
-                    cellNumField[idx] = 0;
-                }
-                else
-                {
-                    if (cellNum.boundaryField()[patchI].size())
-                    {
-                        const label patchFaceI = pp.whichFace(faceI);
-                        cellNumField[idx] = cellNum.boundaryField()[patchI][patchFaceI];
-                        // label asd = cellNum.boundaryField()[patchI][patchFaceI];
-                    }
-                }
-
-
-            }
-
-            // stencilLoop<scalar> loop = stencilLooper[celli];
-        }
-
-        subsetStencil.map().distribute(cellNumField);
-
-
+        stencilLooper<scalar> looper = subsetStencil.stencilValues(cellNum);
         count = 0;
-        for(const auto& neiCelli:subsetStencil)
+        forAll(looper,i)
         {
-            for (const label idx:neiCelli)
+            for (const label& val:looper[i])
             {
-                count += cellNumField[idx];
+                count += val;
             }
         }
-        // Info << "not counting " << endl;
 
         reduce(count,sumOp<scalar>());
     }
@@ -333,72 +269,15 @@ void maskMaskedStencil
     {
 
         profilingTrigger getStencilValues(profDesc + "buildStencil");
-        maskedCPCStencilCompact maskedStencil(cellNum.mesh(),cells,true);
+        maskedCPCStencil maskedStencil(cellNum.mesh(),cells,true);
 
-        // const labelList& cellAddress = maskedStencil.subSetCells();
-        const labelList& sendIndices = maskedStencil.sendIndices();
-        Field<scalar> cellNumField(sendIndices.size(),0);
-
-        label nCells = cellNum.mesh().nCells();
-
-        forAll(sendIndices,i) //const label celli:maskedStencil.celliAddressing())
-        {
-            label idx = sendIndices[i];
-            if (idx == -1)
-            {
-                continue;
-            }
-
-            if (i < nCells)
-            {
-                cellNumField[idx] = cellNum[i];
-            }
-            else
-            {
-                const label faceI = i + mesh.nInternalFaces() - mesh.nCells();
-
-                const polyBoundaryMesh& pbm = mesh.boundaryMesh();
-
-                // Boundary face. Find out which face of which patch
-                const label patchI = pbm.whichPatch(faceI);
-
-                if (patchI < 0 || patchI >= pbm.size())
-                {
-                        FatalErrorInFunction
-                        << "Cannot find patch for face " << faceI
-                        << abort(FatalError);
-                }
-                const polyPatch& pp = pbm[patchI];
-                // Info << "pp.name " << pp.name() << endl;
-                if (isA<emptyPolyPatch>(pp))
-                {
-                    cellNumField[idx] = 0;
-                }
-                else
-                {
-                    if (cellNum.boundaryField()[patchI].size())
-                    {
-                        const label patchFaceI = pp.whichFace(faceI);
-                        cellNumField[idx] = cellNum.boundaryField()[patchI][patchFaceI];
-                        // label asd = cellNum.boundaryField()[patchI][patchFaceI];
-                    }
-                }
-            }
-
-
-            // stencilLoop<scalar> loop = stencilLooper[celli];
-        }
-
-        maskedStencil.map().distribute(cellNumField);
-
-
-
+        stencilLooper<scalar> looper = maskedStencil.stencilValues(cellNum);
         count = 0;
-        for(const auto& neiCelli:maskedStencil)
+        forAll(looper,i)
         {
-            for (const label idx:neiCelli)
+            for (const label& val:looper[i])
             {
-                count += cellNumField[idx];
+                count += val;
             }
         }
 

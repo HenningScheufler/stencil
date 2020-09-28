@@ -37,83 +37,65 @@ void Foam::maskedCPCStencil::calcCellStencil
     labelListList& globalCellCells
 )
 {
-    profilingTrigger maskedCPCStencilInStencil("maskedCPCStencilInStencil");
     const extendedCentredCellToCellStencil& stdCPCstencil =
         centredCPCCellToCellStencilObject::New(mesh_);
 
 
-    label fieldSize = stdCPCstencil.map().constructSize();
 
-    labelList addressing(fieldSize,-1);
-
-    // simpler without BCs
-    bitSet inStencil(fieldSize,false);
-    label nCells = mesh_.nCells();
-    label nCellsAndBCs = mesh_.nCells() + mesh_.nBoundaryFaces();
-    // if (includeBoundaryCells_)
-    // {
-    //     nCells += mesh_.nBoundaryFaces();
-    // }
-
-    // is in compact number not global numbering
     const labelListList& stencil = stdCPCstencil.stencil();
 
-    // the stencil is only defined at the cells not the interface
-    // but interface values can be included in the stencil
-    label nStencilCells = 0;
+    List<Map<label>> compactList;
+    map_.reset
+    (
+        new mapDistribute
+        (
+            stdCPCstencil.map()
+        )
+    );
+
+
+
+
+    boolList isInStencil(map().constructSize(), false);
+
+    for (const label idx: mask_)
+    {
+        isInStencil[idx] = true;
+    }
+
+    stdCPCstencil.map().distribute(isInStencil);
+
+    labelList oldToNewSub;
+    labelList oldToNewConstruct;
+    map_.ref().compact
+    (
+        isInStencil,
+        mesh_.nCells()+mesh_.nBoundaryFaces(),      // maximum index of subMap
+        sendMapIndices_,
+        oldToNewConstruct,
+        UPstream::msgType()
+    );
+
+
+    DynamicList<label> neiCells(100);
+    globalCellCells.setSize(celliAddressing_.size());
+    label count= 0;
     for (const label celli:celliAddressing_)
     {
-        if (celli >= nCells)
-        {
-            break;
-        }
-        ++nStencilCells;
-
+        neiCells.clear();
         for (const label nei:stencil[celli])
         {
-
-            if (nei < nCellsAndBCs) // only the local cells
-            {   if (mask_.test(celli))
-                {
-                    inStencil.set(nei);
-                }
-            }
-        }
-    }
-    maskedCPCStencilInStencil.stop();
-
-    globalNumbering_ = globalIndex(inStencil.count());
-    label localSize = 0;
-    for (const label idx:inStencil)
-    {
-        addressing[idx] = globalNumbering_.toGlobal(localSize);
-        ++localSize;
-    }
-
-    stdCPCstencil.map().distribute(addressing);
-
-    profilingTrigger maskedCPCStencilreaddress("maskedCPCStencilreaddress");
-
-    globalCellCells.setSize(nStencilCells);
-    DynamicList<label> subSetNeiCells(1000);
-
-    localSize = 0;
-    for (label i=0;i < nStencilCells;i++)
-    {
-        const label celli = celliAddressing_[i];
-        subSetNeiCells.clear();
-        for (const label nei:stencil[celli])
-        {
-            const label newIdx = addressing[nei];
-            if (newIdx != -1)
+            label newIdx = oldToNewConstruct[nei];
+            if (newIdx != -1 && isInStencil[nei])
             {
-                subSetNeiCells.append(newIdx);
+                neiCells.append(newIdx);
             }
         }
-        globalCellCells[localSize] = subSetNeiCells;
-        ++localSize;
+        globalCellCells[count] = neiCells;
+        ++count;
     }
-    maskedCPCStencilreaddress.stop();
+
+
 }
 
 
@@ -128,7 +110,6 @@ Foam::maskedCPCStencil::maskedCPCStencil
 )
 :
     mesh_(mesh),
-    globalNumbering_(),
     map_(nullptr),
     mask_(mask),
     celliAddressing_(mask.toc()),
@@ -142,27 +123,11 @@ Foam::maskedCPCStencil::maskedCPCStencil
                     << "mesh.nBoundaryFaces() to false" << nl
                     << abort(FatalError);
     }
+
     // Calculate per cell the (point) connected cells (in global numbering)
     // labelListList globalCellCells;
-    profilingTrigger maskedCPCStencilcalcCellStencil("maskedCPCStencilcalcCellStencil");
-    calcCellStencil(*this);
-    maskedCPCStencilcalcCellStencil.stop();
-
-    List<Map<label>> compactList;
-
-    profilingTrigger maskedCPCStencilmapDistribute("maskedCPCStencilmapDistribute");
-    map_.reset
-    (
-        new mapDistribute
-        (
-            globalNumbering_,
-            *this,
-            compactList
-        )
-    );
-    maskedCPCStencilmapDistribute.stop();
-
+    labelListList& stencil = *this;
+    calcCellStencil(stencil); // map sendMapIndices_ is set here
 }
-
 
 // ************************************************************************* //

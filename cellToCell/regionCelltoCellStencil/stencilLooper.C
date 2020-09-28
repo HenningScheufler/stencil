@@ -84,7 +84,7 @@ Foam::stencilLooper<Type>::stencilLooper
     map_(map),
     stencil_(stencil),
     size_(stencil.size()),
-    flatfld_(map_.constructSize())
+    flatfld_(fld.size())
 {
     // Insert my internal values
     forAll(fld, celli)
@@ -130,3 +130,4 @@ const Foam::stencilLoop<Type> Foam::stencilLooper<Type>::operator[](const label 
 // ************************************************************************* //
 
 template class Foam::stencilLooper<Foam::scalar>;
+//template class Foam::stencilLooper<Foam::vector>;
