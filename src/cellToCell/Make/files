@@ -1,0 +1,19 @@
+
+globalIndexStencils/cellToCellStencil.C
+globalIndexStencils/CPCCellToCellStencilUniqueList.C
+globalIndexStencils/CPCCellToCellStencilCellBasedBitSet.C
+globalIndexStencils/CPCCellToCellStencilCellBased.C
+globalIndexStencils/CPCCellToCellStencilUniqueListInsert.C
+regionCelltoCellStencil/stencilLoop.C
+regionCelltoCellStencil/regionCelltoCellStencil.C
+regionCelltoCellStencil/extendedCelltoCellStencilLooper.C
+regionCelltoCellStencil/stencilLooper.C
+
+
+subSetStencil/subSetCPCStencil.C
+subSetStencil/maskedCPCStencil.C
+
+MeshObjects/centredListBasedCPCCellToCellStencilObject.C
+gradScheme/LeastSquaresGrads.C
+
+LIB = $(FOAM_USER_LIBBIN)/libstencil

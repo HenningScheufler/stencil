@@ -1,6 +1,8 @@
 #!/bin/bash
 
-wmake libso cellToCell
+wmake libso src/cellToCell
 
-wmake test-buildStencil
-wmake test-stencilAddressing
+wmake apps/test-buildStencil
+wmake apps/test-stencilAddressing
+
+wmake foamDictToJson

@@ -1,0 +1,78 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.2.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      fvSchemes;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+ddtSchemes
+{
+    default         CrankNicolson 0.9;
+    //default         backward;
+    //default         Euler;
+
+}
+
+gradSchemes
+{
+    //default         pointCellsLeastSquares;
+    nHat        pointCellsLeastSquares;
+    limited        pointCellsLeastSquares;
+    gradPLIC(T.liquid) interfaceLeastSquare pointCellsLeastSquares;
+    gradPLIC(T.gas) interfaceLeastSquare pointCellsLeastSquares;
+    grad(T.liquid) pointCellsLeastSquares;
+    grad(T.gas) pointCellsLeastSquares;
+    grad(T) pointCellsLeastSquares;
+}
+
+
+divSchemes
+{
+    div(rhoCpLPhi,T.liquid) Gauss vanLeer;
+    div(rhoCpVPhi,T.gas) Gauss vanLeer;
+    divPLIC(rhoCpLPhi,T.liquid) GaussPLIC vanLeer;
+    divPLIC(rhoCpVPhi,T.gas) GaussPLIC vanLeer;
+    div(rhoCpPhi,T) Gauss vanLeer;
+}
+
+laplacianSchemes
+{
+    //default         Gauss linear uncorrected;
+    laplacian(kappa,T.liquid)  Gauss linear corrected;
+    laplacian(kappa,T.gas)  Gauss linear corrected;
+    laplacian(kappa,T)  Gauss linear corrected;
+    laplacianPLIC(interpolate(kappa),T.liquid)  GaussPLIC linear PLICrecentreing;
+    laplacianPLIC(interpolate(kappa),T.gas)  GaussPLIC linear PLICrecentreing;
+    //laplacianPLIC(interpolate((alpha.phase1*D)),T.phase1)  GaussPLIC linear PLICuncorrected;
+}
+
+interpolationSchemes
+{
+    default         linear;
+}
+
+snGradSchemes
+{
+    default         corrected;
+}
+
+fluxRequired
+{
+    default         no;
+    p_rgh;
+    pcorr;
+    alpha1;
+}
+
+
+// ************************************************************************* //

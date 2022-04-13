@@ -1,0 +1,27 @@
+#!/bin/sh
+cd "${0%/*}" || exit                                # Run from this directory
+. ${WM_PROJECT_DIR:?}/bin/tools/RunFunctions        # Tutorial run functions
+. ${WM_PROJECT_DIR:?}/bin/tools/CleanFunctions      # Tutorial clean functions
+#------------------------------------------------------------------------------
+
+restore0Dir
+
+runApplication blockMesh
+#runApplication setSet -batch createObstacle.setSet
+runApplication topoSet
+runApplication subsetMesh -overwrite c0 -patch walls
+runApplication setFields
+
+foamDictionary system/fvSchemes -entry gradSchemes/default -set pointCellsListBasedLeastSquares
+runApplication -s newGrad decomposePar
+runParallel -s newGrad $(getApplication)
+
+rm -r processor*
+
+foamDictionary system/fvSchemes -entry gradSchemes/default -set pointCellsLeastSquares
+runApplication -s oldGrad decomposePar
+runParallel -s oldGrad $(getApplication)
+
+#runApplication $(getApplication)
+
+#------------------------------------------------------------------------------

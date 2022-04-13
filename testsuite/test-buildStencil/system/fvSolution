@@ -1,0 +1,130 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.2.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      fvSolution;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+solvers
+{
+    alpha.liquid
+    {
+        surfCellTol     1e-6;
+        nAlphaBounds    3;
+        snapTol         1e-12;
+        clip            true;
+
+        nAlphaCorr      1;
+        nAlphaSubCycles 1;
+        cAlpha          1;
+        advectionScheme isoAdvection;
+        reconstructionScheme plicRDF;
+        vof2IsoTol      1e-8;
+        writeVTK false;
+    }
+
+    "T.*"
+    {
+        solver          PBiCG;
+        preconditioner  DILU;
+        //solver          PCG;
+        //preconditioner  DIC;
+        tol             1e-10;
+        minIter         5;
+
+        // solver          smoothSolver;
+        // smoother        DILU;
+        // tol             1e-15;
+        // minIter         2;
+
+    }
+}
+
+TFormlation embeddedBC; // oneField twoField embeddedBC
+
+embeddedBC
+{
+    BCVal1 0; // set BC Values
+    BCVal2 0;
+    embeddedBC PLICBC; // heatResistant selectedGradExplicit implicitGrad PLICBC
+
+    implicitGradCoeffs
+    {
+
+    }
+    selectedGradExplicitCoeffs
+    {
+
+    }
+    heatResistantCoeffs
+    {
+        heatResistant 1e12;
+    }
+    PLICBCCoeffs
+    {
+
+    }
+
+    BC1
+    {
+        gamma 0.01;
+        value 0;
+    }
+
+    BC2
+    {
+        gamma 0.01;
+        value 0;
+    }
+}
+
+
+isoAdvector
+{
+
+}
+
+interfaceBC
+{
+    gamma 0.01;
+    value 0;
+    gradient -2.8853900817779268;
+}
+
+initField
+{
+    interfaceType   plane;
+    fieldProfile    file-radialSym;
+    direction       (0 0 1);
+    file            "TData.dat";
+    centre (2 2 0.0);
+    time 0.0;
+}
+
+PIMPLE
+{
+    momentumPredictor no;
+    nCorrectors     -1;
+    nNonOrthogonalCorrectors -1;
+    nAlphaCorr      1;
+    nAlphaSubCycles 1;
+    cAlpha          1;
+    pRefCell        0;
+    pRefValue       0;
+}
+
+SIMPLE
+{
+    nNonOrthogonalCorrectors 0;
+}
+
+// ************************************************************************* //

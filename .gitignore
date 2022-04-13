@@ -105,4 +105,6 @@ Cases*
 polyMesh
 log.*
 
+
+__pycache__
 # end-of-file

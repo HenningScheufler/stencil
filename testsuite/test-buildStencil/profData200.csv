@@ -1,0 +1,17 @@
+,id,description,calls,totalTime,childTime,active,parentId,processor,Res
+trigger1,1,"""CPCCellToCellStencilCellBased::calcCellStencil""",1,5.819193987,0.100720098,false,0,processor1,200
+trigger3,3,"""CPCCellToCellStencilUniqueList::calcCellStencil""",1,3.686250375,0.110600362,false,0,processor1,200
+trigger5,5,"""CPCCellToCellStencilUniqueListInsert::calcCellStencil""",1,2.721596383,0.1342513,false,0,processor1,200
+trigger7,7,"""CPCCellToCellStencilCellBasedBitSet::calcCellStencil""",1,141.292047891,0.115200392,false,0,processor1,200
+trigger1,1,"""CPCCellToCellStencilCellBased::calcCellStencil""",1,5.805289981,0.101871914,false,0,processor3,200
+trigger3,3,"""CPCCellToCellStencilUniqueList::calcCellStencil""",1,3.627176841,0.112544549,false,0,processor3,200
+trigger5,5,"""CPCCellToCellStencilUniqueListInsert::calcCellStencil""",1,2.625824289,0.136267794,false,0,processor3,200
+trigger7,7,"""CPCCellToCellStencilCellBasedBitSet::calcCellStencil""",1,319.500620965,0.11741335,false,0,processor3,200
+trigger1,1,"""CPCCellToCellStencilCellBased::calcCellStencil""",1,5.712653814,0.103501251,false,0,processor2,200
+trigger3,3,"""CPCCellToCellStencilUniqueList::calcCellStencil""",1,3.688200804,0.114677134,false,0,processor2,200
+trigger5,5,"""CPCCellToCellStencilUniqueListInsert::calcCellStencil""",1,2.741436254,0.138207311,false,0,processor2,200
+trigger7,7,"""CPCCellToCellStencilCellBasedBitSet::calcCellStencil""",1,230.653676447,0.118238673,false,0,processor2,200
+trigger1,1,"""CPCCellToCellStencilCellBased::calcCellStencil""",1,5.726770777,0.101301888,false,0,processor0,200
+trigger3,3,"""CPCCellToCellStencilUniqueList::calcCellStencil""",1,3.687659401,0.111262245,false,0,processor0,200
+trigger5,5,"""CPCCellToCellStencilUniqueListInsert::calcCellStencil""",1,2.631680743,0.128059736,false,0,processor0,200
+trigger7,7,"""CPCCellToCellStencilCellBasedBitSet::calcCellStencil""",1,51.488454859,0.115411193,false,0,processor0,200
