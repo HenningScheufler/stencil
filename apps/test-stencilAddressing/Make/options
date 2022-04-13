@@ -1,5 +1,5 @@
 EXE_INC = \
-    -I../cellToCell/lnInclude \
+    -I../../src/cellToCell/lnInclude \
     -I$(LIB_SRC)/finiteVolume/lnInclude \
     -I$(LIB_SRC)/meshTools/lnInclude \
     -I$(LIB_SRC)/sampling/lnInclude
